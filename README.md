@@ -149,21 +149,25 @@ owit server --port 8080  # starts the API + serves the UI
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph UI["CLI / Browser UI"]
-        UI
-    end
-    subgraph Core["OpenWatchIt Core (Go)"]
-        direction TB
-        Parser["OWL Parser"] --> Planner["Query Planner"] --> Executor["Fan-out Executor"]
-        Merger["Result Merger"] --> Normalizer["Normalizer"] --> Renderer["Renderer / API"]
-    end
-    UI --> Core
-    Core -->|gRPC| Loki["Loki Plugin (Go)"]
-    Core -->|gRPC| DataDog["DataDog Plugin (Go)"]
-    Core -->|gRPC| CloudW["CloudW. Plugin (Go)"]
-    Core -->|gRPC| AnyPlugin["Any Plugin (community)"]
+[Im](./public/openwatchit%20architecture.jpg)
+
+```
+┌──────────────────────────────────────────────────┐
+│              CLI  /  Browser UI                  │
+└──────────────────┬───────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────┐
+│               OpenWatchIt Core  (Go)             │
+│                                                  │
+│  OWL Parser → Query Planner → Fan-out Executor   │
+│  Result Merger → Normalizer → Renderer / API     │
+└──────┬──────────┬──────────┬──────────┬──────────┘
+       │ gRPC     │ gRPC     │ gRPC     │ gRPC
+┌──────▼──┐ ┌────▼────┐ ┌───▼────┐ ┌──▼──────────┐
+│  Loki   │ │DataDog  │ │CloudW. │ │  Any Plugin  │
+│ Plugin  │ │ Plugin  │ │ Plugin │ │  (community) │
+│  (Go)   │ │  (Go)   │ │  (Go)  │ │  (any lang)  │
+└─────────┘ └─────────┘ └────────┘ └─────────────┘
 ```
 
 **Core is written in Go.** Reasons: first-class gRPC support, excellent concurrency model for fan-out, single binary distribution, strong CLI ecosystem (`cobra`, `viper`), and broad familiarity in the DevOps/Platform engineering community.
