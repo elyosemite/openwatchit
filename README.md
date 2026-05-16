@@ -1,8 +1,11 @@
 # OpenWatchIt — One Query Language to Rule Them All
 
-> **Status:** RFC (Request for Comments) — Community Discussion
-> **Author:** Yuri Melo
-> **Date:** May 2026
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Built with Go](https://img.shields.io/badge/built%20with-Go-00ADD8?logo=go&logoColor=white)](https://go.dev)
+[![gRPC](https://img.shields.io/badge/plugins-gRPC-244c5a?logo=grpc&logoColor=white)](https://grpc.io)
+[![GitHub Discussions](https://img.shields.io/github/discussions/elyosemite/openwatchit?label=discussions&color=6e40c9&logo=github)](https://github.com/elyosemite/openwatchit/discussions)
+[![GitHub Stars](https://img.shields.io/github/stars/elyosemite/openwatchit?style=flat&logo=github&color=f5a623)](https://github.com/elyosemite/openwatchit/stargazers)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/elyosemite/openwatchit/discussions)
 
 ---
 
