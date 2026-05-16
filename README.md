@@ -45,19 +45,29 @@ A KQL-inspired, pipeline-based query language that maps to every signal type:
 
 ```sql
 -- Logs
-logs | where level == "error" | where service == "checkout" | last 30m | limit 100
+logs | where level == "error"
+    | where service == "checkout"
+    | last 30m
+    | limit 100
 
 -- Metrics
-metrics | where __name__ == "http_requests_total" | where env == "prod"
-       | summarize sum(value) by service | order by sum desc
+metrics | where __name__ == "http_requests_total"
+    | where env == "prod"
+    | summarize sum(value) by service
+    | order by sum desc
 
 -- Traces
-traces | where duration > 500ms | where root_error == true
-       | project traceId, service, duration, spanCount | limit 20
+traces | where duration > 500ms
+    | where root_error == true
+    | project traceId, service, duration, spanCount
+    | limit 20
 
 -- Profiles
-profiles | where type == "cpu" | where service == "api-gateway"
-         | summarize avg(value) by function | order by avg desc | limit 10
+profiles | where type == "cpu"
+    | where service == "api-gateway"
+    | summarize avg(value) by function
+    | order by avg desc
+    | limit 10
 
 -- Cross-signal correlation (the real power)
 logs | where level == "error"
@@ -139,23 +149,21 @@ owit server --port 8080  # starts the API + serves the UI
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────┐
-│              CLI  /  Browser UI                  │
-└──────────────────┬───────────────────────────────┘
-                   │
-┌──────────────────▼───────────────────────────────┐
-│               OpenWatchIt Core  (Go)             │
-│                                                  │
-│  OWL Parser → Query Planner → Fan-out Executor   │
-│  Result Merger → Normalizer → Renderer / API     │
-└──────┬──────────┬──────────┬──────────┬──────────┘
-       │ gRPC     │ gRPC     │ gRPC     │ gRPC
-┌──────▼──┐ ┌────▼────┐ ┌───▼────┐ ┌──▼──────────┐
-│  Loki   │ │DataDog  │ │CloudW. │ │  Any Plugin  │
-│ Plugin  │ │ Plugin  │ │ Plugin │ │  (community) │
-│  (Go)   │ │  (Go)   │ │  (Go)  │ │  (any lang)  │
-└─────────┘ └─────────┘ └────────┘ └─────────────┘
+```mermaid
+flowchart TB
+    subgraph UI["CLI / Browser UI"]
+        UI
+    end
+    subgraph Core["OpenWatchIt Core (Go)"]
+        direction TB
+        Parser["OWL Parser"] --> Planner["Query Planner"] --> Executor["Fan-out Executor"]
+        Merger["Result Merger"] --> Normalizer["Normalizer"] --> Renderer["Renderer / API"]
+    end
+    UI --> Core
+    Core -->|gRPC| Loki["Loki Plugin (Go)"]
+    Core -->|gRPC| DataDog["DataDog Plugin (Go)"]
+    Core -->|gRPC| CloudW["CloudW. Plugin (Go)"]
+    Core -->|gRPC| AnyPlugin["Any Plugin (community)"]
 ```
 
 **Core is written in Go.** Reasons: first-class gRPC support, excellent concurrency model for fan-out, single binary distribution, strong CLI ecosystem (`cobra`, `viper`), and broad familiarity in the DevOps/Platform engineering community.
