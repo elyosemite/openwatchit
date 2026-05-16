@@ -151,25 +151,6 @@ owit server --port 8080  # starts the API + serves the UI
 
 ![Im](./public/openwatchit%20architecture.jpg)
 
-```
-┌──────────────────────────────────────────────────┐
-│              CLI  /  Browser UI                  │
-└──────────────────┬───────────────────────────────┘
-                   │
-┌──────────────────▼───────────────────────────────┐
-│               OpenWatchIt Core  (Go)             │
-│                                                  │
-│  OWL Parser → Query Planner → Fan-out Executor   │
-│  Result Merger → Normalizer → Renderer / API     │
-└──────┬──────────┬──────────┬──────────┬──────────┘
-       │ gRPC     │ gRPC     │ gRPC     │ gRPC
-┌──────▼──┐ ┌────▼────┐ ┌───▼────┐ ┌──▼──────────┐
-│  Loki   │ │DataDog  │ │CloudW. │ │  Any Plugin  │
-│ Plugin  │ │ Plugin  │ │ Plugin │ │  (community) │
-│  (Go)   │ │  (Go)   │ │  (Go)  │ │  (any lang)  │
-└─────────┘ └─────────┘ └────────┘ └─────────────┘
-```
-
 **Core is written in Go.** Reasons: first-class gRPC support, excellent concurrency model for fan-out, single binary distribution, strong CLI ecosystem (`cobra`, `viper`), and broad familiarity in the DevOps/Platform engineering community.
 
 ---
