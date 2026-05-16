@@ -149,7 +149,7 @@ owit server --port 8080  # starts the API + serves the UI
 
 ## Architecture
 
-[Im](./public/openwatchit%20architecture.jpg)
+![Im](./public/openwatchit%20architecture.jpg)
 
 ```
 ┌──────────────────────────────────────────────────┐
