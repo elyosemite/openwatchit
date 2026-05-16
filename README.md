@@ -253,7 +253,7 @@ We want to hear from DevOps engineers, SREs, software architects, and platform e
 
 ## Contributing
 
-If this RFC gets enough signal, the next step is a working prototype of the core parser and two initial plugins (Loki and Prometheus). Watch this repo to follow along.
+If this proposal gets enough signal, the next step is a working prototype of the core parser and two initial plugins (Loki and Prometheus). Watch this repo to follow along.
 
 ---
 
