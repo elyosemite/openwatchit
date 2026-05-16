@@ -1,4 +1,4 @@
-# OpenWatchIt — One Query Language to Rule Them All
+# OpenWatchIt
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Built with Go](https://img.shields.io/badge/built%20with-Go-00ADD8?logo=go&logoColor=white)](https://go.dev)
