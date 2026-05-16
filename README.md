@@ -248,6 +248,8 @@ We want to hear from DevOps engineers, SREs, software architects, and platform e
 
 If this proposal gets enough signal, the next step is a working prototype of the core parser and two initial plugins (Loki and Prometheus). Watch this repo to follow along.
 
+Read [**CONTRIBUTING.md**](CONTRIBUTING.md) to understand what meaningful contribution looks like at this stage.
+
 ---
 
 _OpenWatchIt is not a company. It's a proposal. What it becomes depends entirely on whether the problem resonates with you._
