@@ -22,9 +22,13 @@ The default execution model when running `owit query`, `owit tail`, or `owit rep
 
 Activated when `server_url` is set in the TOML config or passed via `--server`. The CLI acts as a thin client, forwarding OWL queries to a remote Control Panel over HTTP/gRPC. Plugins and backend config are managed centrally by the server. The natural deployment model for teams sharing backends and credentials.
 
+## Fan-out Executor
+
+The Control Panel component that dispatches an OWL query (as AST) to the target plugins in parallel via gRPC, and ingests their streaming result rows. Internally contains a **result ingestion pipeline** that normalizes each incoming row against the Normalized Result schema (canonical field validation and type enforcement) before forwarding rows to the Result Merger. Slow backends do not block fast ones.
+
 ## Control Panel
 
-The engine core of OpenWatchIt. Contains the OWL Parser, Query Planner, Fan-out Executor, Result Merger, Normalizer, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
+The engine core of OpenWatchIt. Contains the OWL Parser, Query Planner, Fan-out Executor (with built-in normalization), Result Merger, Renderer, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
 
 ## Query Mode vs. Tail Mode
 
@@ -60,6 +64,3 @@ The common row schema returned by all plugins regardless of vendor. Contains two
 
 OWL joins and correlations operate only on canonical fields. A future **Plugin Field Mapping** mechanism (not in v0.x) will let plugin authors declare aliases that promote vendor-specific fields into canonical names, enabling users to write queries in a vocabulary closer to their own team's language.
 
-## Normalizer
-
-The Control Panel component responsible for validating and enforcing the Normalized Result schema as plugin results arrive. Ensures canonical fields are present and correctly typed before results reach the Result Merger or Renderer.
