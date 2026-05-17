@@ -22,13 +22,17 @@ The default execution model when running `owit query`, `owit tail`, or `owit rep
 
 Activated when `server_url` is set in the TOML config or passed via `--server`. The CLI acts as a thin client, forwarding OWL queries to a remote Control Panel over HTTP/gRPC. Plugins and backend config are managed centrally by the server. The natural deployment model for teams sharing backends and credentials.
 
+## Plugin Manager
+
+The Control Panel component responsible for plugin process lifecycle. Responsibilities: discover installed plugins from `~/.owit/plugins/` and `.owit/plugins/`; spawn plugin processes on demand; maintain gRPC connections; health-check running plugins; enforce the inactivity timeout (ADR-0006); and cache each plugin's `Capabilities` response for use by the Query Planner. The Fan-out Executor and Query Planner never spawn or connect to plugins directly — they always go through the Plugin Manager.
+
 ## Fan-out Executor
 
 The Control Panel component that dispatches an OWL query (as AST) to the target plugins in parallel via gRPC, and ingests their streaming result rows. Internally contains a **result ingestion pipeline** that normalizes each incoming row against the Normalized Result schema (canonical field validation and type enforcement) before forwarding rows to the Result Merger. Slow backends do not block fast ones.
 
 ## Control Panel
 
-The engine core of OpenWatchIt. Contains the OWL Parser, Query Planner, Fan-out Executor (with built-in normalization), Result Merger, Renderer, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
+The engine core of OpenWatchIt. Contains: OWL Parser, Query Planner, Plugin Manager, Fan-out Executor (with built-in normalization), Result Merger, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
 
 ## Query Mode vs. Tail Mode
 
