@@ -28,7 +28,7 @@ The tools are excellent individually. The problem is **the seams between them**.
 You write one query. OpenWatchIt dispatches it to every configured backend in parallel, translates it to each vendor's native language under the hood, and returns a unified, normalized result.
 
 ```bash
-owit logs --where "level == 'error'" --where "service == 'payments'" --last 1h --limit 50
+owit logs level=error service=payments --last 1h --limit 50
 ```
 
 That single command hits Loki, Datadog, and CloudWatch simultaneously — you get one result, ranked by timestamp, with a `_source` column showing where each entry came from.
@@ -41,21 +41,26 @@ No new vendor to learn. No new dashboard to configure. One tool, every source.
 
 ### 1. OpenWatch Query Language (OWL)
 
-OWL is OpenWatchIt's own query language. The signal type is the subcommand; each operator is a named flag:
+OWL is OpenWatchIt's own query language. The signal type is the subcommand, filters are positional triplets (`field op value`), and options are named flags:
 
 ```bash
-# Logs
-owit logs --where "level == 'error'" --where "service == 'checkout'" --last 30m --limit 100
+# Logs — equality shorthand
+owit logs level=error service=checkout --last 30m --limit 100
+
+# Logs — explicit operator
+owit logs level eq error message contains timeout --last 1h --limit 50
 
 # Metrics
-owit metrics --where "__name__ == 'http_requests_total'" --where "env == 'prod'" --summarize "sum(value) by service"
+owit metrics name eq http_requests_total env=prod --summarize "sum(value) by service" --last 1h
 
 # Traces
-owit traces --where "duration > 500ms" --where "root_error == true" --limit 20
+owit traces duration gt 500ms root_error eq true --last 1h --limit 20
 
 # Profiles
-owit profiles --where "type == 'cpu'" --where "service == 'api-gateway'" --summarize "avg(value) by function" --limit 10
+owit profiles type=cpu service=api-gateway --summarize "avg(value) by function" --limit 10
 ```
+
+Filter operators: `eq` (also `field=value`), `ne`, `gt`, `ge`, `lt`, `le`, `contains`.
 
 OWL is intentionally readable. A developer who has never used it before should be able to write a useful query in under five minutes.
 
@@ -120,9 +125,9 @@ Any developer can publish a plugin. Plugins go through a lightweight verificatio
 **CLI** — designed for engineers who live in the terminal, scripts, CI pipelines, and incident response playbooks:
 
 ```bash
-owit traces --where "duration > 1s" --output table
-owit metrics --where "env == 'prod'" --output json | jq '.[] | .value'
-owit tail logs --where "service == 'api'"          # streaming, like tail -f
+owit traces duration gt 1s --output table
+owit metrics env=prod --output json | jq '.[] | .value'
+owit tail logs service=api                         # streaming, like tail -f
 ```
 
 **UI** — a browser-based interface that connects to an OpenWatchIt server instance, designed for teams who want a shared, visual layer over all their backends. Useful for dashboards, sharing queries, and onboarding.

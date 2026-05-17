@@ -6,16 +6,46 @@ One of four categories of observability telemetry: **logs**, **metrics**, **trac
 
 ## OWL (OpenWatch Query Language)
 
-The unified query language of OpenWatchIt. OWL is expressed exclusively through CLI flags: the signal type is the subcommand and each operator is a named flag.
+The unified query language of OpenWatchIt. Every query is a CLI command: the signal type is the subcommand, filters are positional arguments, and options (time window, limit, aggregation, targeting) are named flags.
 
+**Filter syntax — positional triplets `field op value`:**
 ```bash
-owit traces --where "duration > 1s" --last 1h --limit 20
-owit logs --where "level == 'error'" --where "service == 'payments'" --last 30m
+owit logs level eq error service eq checkout --last 30m --limit 100
+owit traces duration gt 500ms root_error eq true --last 1h --limit 20
+owit logs level ne info message contains timeout --last 1h --limit 50
 ```
+
+**Equality shorthand — `field=value` is sugar for `field eq value`:**
+```bash
+owit logs level=error service=checkout --last 30m --limit 100
+```
+
+**Filter operators (OData-inspired vocabulary):**
+
+| Operator | Meaning |
+|---|---|
+| `eq` | equal (also: `field=value`) |
+| `ne` | not equal |
+| `gt` | greater than |
+| `ge` | greater than or equal |
+| `lt` | less than |
+| `le` | less than or equal |
+| `contains` | substring match |
+
+**Named flags:**
+
+| Flag | Meaning |
+|---|---|
+| `--last <duration>` | relative time window (e.g. `30m`, `2h`, `7d`) |
+| `--limit N` | maximum number of result rows |
+| `--summarize <expr>` | aggregation expression (e.g. `count() by service`) |
+| `--backends <names>` | target specific backends by name |
+| `--tag <tag>` | target all backends with this tag |
+| `--output <format>` | output format: `table` (default), `json` |
 
 The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
 
-**v0.1 operator scope:** `--where` (row filter), `--last <duration>` (relative time window), `--limit N` (result truncation), `--summarize` (aggregation: `count()`, `avg()`, `sum()`). Operators deferred to later versions: `--project`, `--order-by`, `--extend`, `--join` (cross-signal join targets v0.2).
+**v0.1 operator scope:** `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `contains` filters; `--last`; `--limit`; `--summarize`. Deferred to later versions: `--project`, `--order-by`, `--join` (cross-signal join targets v0.2).
 
 ## Backend
 

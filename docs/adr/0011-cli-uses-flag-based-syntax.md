@@ -1,31 +1,45 @@
-# ADR-0011: OWL is expressed exclusively through CLI flag-based syntax
+# ADR-0011: OWL CLI syntax uses positional filter triplets and named flags
 
 ## Status
 Accepted
 
 ## Context
-Early designs considered two OWL surfaces: a flag-based CLI syntax and a pipeline syntax (using `|` as operator separator) for files or interactive use. The pipeline syntax was dropped entirely. OWL has one surface only.
+Early designs wrapped OWL queries in a quoted string (`owit query "traces | where duration > 1s | ..."`), which conflicted with the shell `|` operator and required escaping. A flag-based approach (`--where "level == 'error'"`) improved on this but still required quoting for each filter expression. A pipeline syntax for files or interactive use was also considered and dropped entirely.
 
-Additionally, OWL was initially described as "KQL-inspired." This framing was dropped: OWL is its own language and should not be marketed by reference to another product.
+Additionally, OWL was initially described as "KQL-inspired." This framing was dropped: OWL is its own language.
 
 ## Decision
-OWL is expressed exclusively as CLI flags. The signal type is the subcommand; each operator is a named flag:
+OWL is expressed exclusively as a CLI command. The signal type is the subcommand; filters are positional triplets; options are named flags.
 
+**Filter triplets** — `field op value`, multiple triplets space-separated:
 ```bash
-owit traces --where "duration > 1s" --where "root_error == true" --last 1h --limit 20
-owit logs --where "level == 'error'" --last 30m --backends loki,datadog
-owit tail logs --where "service == 'payments'"
+owit logs level eq error service eq checkout --last 30m --limit 100
+owit traces duration gt 500ms root_error eq true --last 1h --limit 20
+owit logs level ne info message contains timeout --last 1h --limit 50
 ```
 
-There is no pipeline syntax, no `.owl` file format, and no `owit query "..."` string form.
+**Equality shorthand** — `field=value` is syntactic sugar for `field eq value`:
+```bash
+owit logs level=error service=checkout --last 30m --limit 100
+```
+
+**Filter operators** (OData-inspired vocabulary — `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `contains`).
+
+**Named flags** for non-filter options: `--last`, `--limit`, `--summarize`, `--backends`, `--tag`, `--output`.
+
+The CLI parser collects positional arguments as filter triplets until it encounters the first `--flag`, which avoids ambiguity without a separator token.
+
+There is no pipeline syntax and no file-based query format in v0.x.
 
 ## Reasons
-- A single surface eliminates the need for a CLI adapter layer and a string parser — the CLI flags map directly to the AST.
-- Flag-based syntax is natively discoverable: `owit traces --help` lists every available operator without any documentation lookup.
-- Removing the pipeline syntax removes an entire category of shell-escaping bugs and user confusion about which syntax to use where.
-- Dropping the KQL framing removes an implicit constraint on OWL's evolution — the language can develop its own identity.
+- Positional filter triplets require no quoting for any common filter — no shell conflicts at all.
+- The `field=value` shorthand keeps equality filters concise without sacrificing readability.
+- OData operator names (`eq`, `ne`, `gt`, `ge`, `lt`, `le`) are already familiar to developers who use Azure CLI, REST APIs, or OData-based tools — zero learning curve for the vocabulary.
+- A single, consistent surface (CLI flags) removes the cognitive overhead of choosing between syntaxes.
+- Fully discoverable: `owit logs --help` lists all available operators and flags without any external documentation.
 
 ## Consequences
-- Each OWL operator (`where`, `last`, `limit`, `summarize`, and all future additions) must have a corresponding CLI flag.
-- The OWL Parser receives a structured input (flags parsed by the CLI framework) rather than a string — the "parser" is effectively the flag-to-AST mapping layer in the CLI.
-- There is no file-based query format in v0.x. Reusable queries are shell scripts or shell aliases.
+- The CLI parser must implement triplet grouping for positional args and shorthand `field=value` expansion to `field eq value`.
+- Each signal type subcommand shares the same filter syntax — no signal-type-specific parsing rules.
+- New filter operators added in future versions require parser changes but no flag additions.
+- The `--summarize` flag accepts a quoted expression (e.g. `"count() by service"`) — the only flag that still requires quoting due to the space in its value.
