@@ -8,6 +8,8 @@ One of four categories of observability telemetry: **logs**, **metrics**, **trac
 
 The unified, pipeline-based query language of OpenWatchIt. KQL-inspired syntax using `|` as the pipe operator. An OWL query targets exactly one Signal Type. The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
 
+**v0.1 operator scope:** `where` (row filter), `last <duration>` (relative time window), `limit N` (result truncation), `summarize` (aggregation: `count()`, `avg()`, `sum()`). Operators deferred to later versions: `project`, `order by`, `extend`, `join` (cross-signal join targets v0.2).
+
 ## Backend
 
 A configured vendor instance. One entry in the TOML config file. A single vendor (e.g. DataDog) may appear as multiple backends (e.g. `datadog-prod`, `datadog-staging`). Each backend declares which Signal Types it supports via its plugin's `Capabilities` response.
