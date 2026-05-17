@@ -34,6 +34,12 @@ The Control Panel component that dispatches an OWL query (as AST) to the target 
 
 The engine core of OpenWatchIt. Contains: OWL Parser, Query Planner, Plugin Manager, Fan-out Executor (with built-in normalization), Result Merger, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
 
+The Control Panel is **not responsible for rendering output**. It only produces structured data (Normalized Result rows + warnings). Rendering is a CLI concern.
+
+## Renderer
+
+A CLI-layer component, not part of the Control Panel. Receives structured result rows and warnings from the engine (directly in Embedded Mode, or via API response in Remote Mode) and formats them for the terminal: table, JSON, or streaming. The Browser UI (React) has its own rendering and never uses this component.
+
 ## Query Mode vs. Tail Mode
 
 Two distinct execution modes for the CLI. **Query mode** (`owit query`) buffers all results from all backends, sorts by timestamp, and displays a complete ordered result set. **Tail mode** (`owit tail`) streams results continuously as they arrive from backends, in real time, without ordering guarantees — analogous to `tail -f`.
