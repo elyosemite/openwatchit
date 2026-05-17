@@ -12,6 +12,10 @@ The unified, pipeline-based query language of OpenWatchIt. KQL-inspired syntax u
 
 A configured vendor instance. One entry in the TOML config file. A single vendor (e.g. DataDog) may appear as multiple backends (e.g. `datadog-prod`, `datadog-staging`). Each backend declares which Signal Types it supports via its plugin's `Capabilities` response.
 
+## Query Mode vs. Tail Mode
+
+Two distinct execution modes for the CLI. **Query mode** (`owit query`) buffers all results from all backends, sorts by timestamp, and displays a complete ordered result set. **Tail mode** (`owit tail`) streams results continuously as they arrive from backends, in real time, without ordering guarantees — analogous to `tail -f`.
+
 ## Plugin
 
 An independent process that bridges the OWL engine to a specific vendor's API. Communicates with the engine via gRPC. Can be written in any language. Responsible for: declaring capabilities, translating OWL to the vendor's native query language, executing the query, and streaming back normalized results.
