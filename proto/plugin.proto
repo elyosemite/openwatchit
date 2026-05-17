@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package openwatchit.v1;
+
+option go_package = "github.com/elyosemite/openwatchit/proto/gen/go;owlv1";
+
+import "proto/ast.proto";
+import "proto/result.proto";
+
+// CapabilitiesRequest is sent by the Plugin Manager after spawning a plugin.
+message CapabilitiesRequest {}
+
+// CapabilitiesResponse declares what the plugin supports.
+// The Query Planner uses this to determine fan-out scope and validate queries.
+message CapabilitiesResponse {
+  string                   plugin_name      = 1; // e.g. "loki", "datadog"
+  string                   plugin_version   = 2; // semver string
+  repeated SignalType       signal_types     = 3; // signal types this plugin can serve
+  repeated FilterOperator  filter_operators = 4; // filter operators natively translated (not emulated)
+}
+
+// TranslateRequest carries the parsed OWL AST to the plugin.
+// The plugin translates AST nodes into the vendor's native query language.
+// Plugins never receive raw OWL text — only the structured AST.
+message TranslateRequest {
+  QueryAST ast     = 1;
+  string   backend = 2; // backend name from TOML config, for context
+}
+
+// TranslateResponse returns the vendor-native query string produced by the plugin.
+message TranslateResponse {
+  string native_query = 1; // e.g. a PromQL expression, a LogQL query, a DogStatsD metric query
+}
+
+// QueryRequest carries the native query to be executed against the vendor API.
+message QueryRequest {
+  string backend      = 1;
+  string native_query = 2;
+  QueryAST ast        = 3; // retained so the plugin can emulate unsupported operators (ADR-0002)
+}
+
+// QueryResult is a single streamed message in the Query RPC response stream.
+// Each message is either a result row or a terminal error.
+message QueryResult {
+  oneof payload {
+    ResultRow    row   = 1;
+    QueryWarning error = 2;
+  }
+}
+
+// HealthRequest is sent periodically by the Plugin Manager.
+message HealthRequest {}
+
+// HealthResponse confirms the plugin is alive and ready.
+message HealthResponse {
+  bool ok = 1;
+}
+
+// ObservabilityPlugin is the gRPC contract every OpenWatchIt plugin must implement.
+// Plugins are independent processes; any language with gRPC support can implement this service.
+service ObservabilityPlugin {
+  // Capabilities is called once after spawn. Response is cached by the Plugin Manager.
+  rpc Capabilities(CapabilitiesRequest) returns (CapabilitiesResponse);
+
+  // Translate converts a QueryAST into the vendor's native query string.
+  rpc Translate(TranslateRequest) returns (TranslateResponse);
+
+  // Query executes the native query and streams back ResultRows.
+  // A QueryWarning in the stream signals a terminal error for this backend.
+  rpc Query(QueryRequest) returns (stream QueryResult);
+
+  // HealthCheck is used by the Plugin Manager to verify the plugin is responsive.
+  rpc HealthCheck(HealthRequest) returns (HealthResponse);
+}
