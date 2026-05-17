@@ -32,7 +32,13 @@ Two distinct execution modes for the CLI. **Query mode** (`owit query`) buffers 
 
 ## Plugin
 
-An independent process that bridges the OWL engine to a specific vendor's API. Communicates with the engine via gRPC. Can be written in any language. Responsible for: declaring capabilities, translating OWL to the vendor's native query language, executing the query, and streaming back normalized results.
+An independent process that bridges the OWL engine to a specific vendor's API. Communicates with the engine via gRPC. Can be written in any language. Responsible for: declaring capabilities, translating an OWL AST to the vendor's native query language, executing the query, and streaming back Normalized Results.
+
+Plugins are installed via `owit plugin install <name>` (to `~/.owit/plugins/`) or `owit plugin install --local <name>` (to `.owit/plugins/` relative to the active TOML config). The CLI resolves local plugins before global ones.
+
+## Plugin Marketplace
+
+The public registry where plugin authors publish versioned vendor integrations. `owit plugin install datadog` resolves the plugin name against this registry and downloads the appropriate platform binary. Private plugins can be installed by name with an org scope (`@mycompany/internal-splunk`) or directly by binary path.
 
 ## Fan-out
 
