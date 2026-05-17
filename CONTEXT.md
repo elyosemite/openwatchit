@@ -14,7 +14,7 @@ A configured vendor instance. One entry in the TOML config file. A single vendor
 
 ## Embedded Mode
 
-The default execution model when running `owit query`, `owit tail`, or `owit repl` without a configured server. The Control Panel runs in-process inside the CLI binary. Plugins are spawned as short-lived child processes and terminated when the command finishes. No running server is required.
+The default execution model when running `owit query`, `owit tail`, or `owit repl` without a configured server. The Control Panel runs in-process inside the CLI binary. Plugins run as **lazy daemons** — started on first use, reused across subsequent commands, and terminated after an inactivity timeout (default 30s, configurable in TOML). No running server is required.
 
 ## Remote Mode
 
