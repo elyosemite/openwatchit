@@ -12,6 +12,18 @@ The unified, pipeline-based query language of OpenWatchIt. KQL-inspired syntax u
 
 A configured vendor instance. One entry in the TOML config file. A single vendor (e.g. DataDog) may appear as multiple backends (e.g. `datadog-prod`, `datadog-staging`). Each backend declares which Signal Types it supports via its plugin's `Capabilities` response.
 
+## Embedded Mode
+
+The default execution model when running `owit query`, `owit tail`, or `owit repl` without a configured server. The Control Panel runs in-process inside the CLI binary. Plugins are spawned as short-lived child processes and terminated when the command finishes. No running server is required.
+
+## Remote Mode
+
+Activated when `server_url` is set in the TOML config or passed via `--server`. The CLI acts as a thin client, forwarding OWL queries to a remote Control Panel over HTTP/gRPC. Plugins and backend config are managed centrally by the server. The natural deployment model for teams sharing backends and credentials.
+
+## Control Panel
+
+The engine core of OpenWatchIt. Contains the OWL Parser, Query Planner, Fan-out Executor, Result Merger, Normalizer, and API. Runs either embedded inside the CLI binary (Embedded Mode) or as a standalone long-running process started via `owit server` (Remote Mode).
+
 ## Query Mode vs. Tail Mode
 
 Two distinct execution modes for the CLI. **Query mode** (`owit query`) buffers all results from all backends, sorts by timestamp, and displays a complete ordered result set. **Tail mode** (`owit tail`) streams results continuously as they arrive from backends, in real time, without ordering guarantees — analogous to `tail -f`.
