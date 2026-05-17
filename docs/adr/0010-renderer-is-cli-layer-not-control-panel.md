@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-The original component list included a Renderer inside the Control Panel alongside the OWL Parser, Query Planner, Fan-out Executor, Result Merger, and API.
+The original component list included a Renderer inside the Control Panel alongside the OWL Parser, Query Planner, Dispatcher, Result Merger, and API.
 
 ## Decision
 The Renderer is removed from the Control Panel and classified as a CLI-layer component.

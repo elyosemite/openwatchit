@@ -77,22 +77,25 @@ logs | where level == "error"
 
 OWL is intentionally readable. A developer who has never used it before should be able to write a useful query in under five minutes.
 
-### 2. Multi-vendor Fan-out
+### 2. Multi-vendor Dispatch
 
-Queries are executed against all configured — or explicitly targeted — backends in parallel:
+Queries are dispatched to multiple backends in parallel. By default, a query is sent to every backend marked `default = true` in your config **that declares support for the query's signal type** (logs, metrics, traces, or profiles). A Prometheus backend never receives a logs query; a Loki backend never receives a metrics query.
 
 ```bash
-# All configured backends
+# All default backends matching the signal type
 owit query "logs | where level == 'error'"
 
 # Specific backends
 owit query --backends loki,datadog "logs | where service == 'api'"
 
-# All backends of a given type
+# All backends of a given type, regardless of default flag
 owit query --type logs "logs | where level == 'error'"
+
+# All backends with a given tag
+owit query --tag prod "metrics | where __name__ == 'http_requests_total'"
 ```
 
-Results arrive as backends respond. Slow backends don't block fast ones.
+Results arrive as backends respond. Slow backends don't block fast ones. If a backend fails, you get results from the healthy backends plus an explicit warning — never silent partial data.
 
 ### 3. Plugin Architecture via gRPC
 
@@ -107,6 +110,8 @@ service ObservabilityPlugin {
   rpc HealthCheck(HealthRequest) returns (HealthResponse);
 }
 ```
+
+The core OWL Parser produces an **AST (Abstract Syntax Tree)** from the user's query. `TranslateRequest` carries this AST — not raw OWL text. Plugins never implement an OWL parser; they only walk the AST and emit their vendor's native query language (PromQL, LogQL, DogStatsD, KQL, etc.). This means OWL syntax can evolve without breaking existing plugins.
 
 This means:
 - The core team maintains the language and the runtime.
@@ -149,9 +154,22 @@ owit server --port 8080  # starts the API + serves the UI
 
 ## Architecture
 
-![Im](./public/openwatchit%20architecture.jpg)
+![Architecture diagram](./public/openwatchit%20architecture.jpg)
 
-**Core is written in Go.** Reasons: first-class gRPC support, excellent concurrency model for fan-out, single binary distribution, strong CLI ecosystem (`cobra`, `viper`), and broad familiarity in the DevOps/Platform engineering community.
+**Core is written in Go.** Reasons: first-class gRPC support, excellent concurrency model for parallel dispatch, single binary distribution, strong CLI ecosystem (`cobra`, `viper`), and broad familiarity in the DevOps/Platform engineering community.
+
+### Control Panel components
+
+| Component | Responsibility |
+|---|---|
+| **OWL Parser** | Parses OWL query text into an AST |
+| **Query Planner** | Converts the AST into an execution plan: which backends, join strategy, fan-out scope |
+| **Plugin Manager** | Manages plugin process lifecycle; caches `Capabilities` responses; provides gRPC connections to the Dispatcher and Query Planner |
+| **Dispatcher** | Sends the AST to target plugins in parallel; normalises incoming result rows against the canonical schema before forwarding |
+| **Result Merger** | Combines normalised rows from all backends; executes cross-signal joins when no single backend covers all signal types |
+| **API** | Exposes query execution to the CLI (Embedded and Remote Mode) and the Browser UI |
+
+The **Renderer** is a CLI-layer component — it formats result rows and warnings for terminal output (table, JSON, stream). It is not part of the Control Panel. The Browser UI renders its own output independently.
 
 ---
 

@@ -25,6 +25,6 @@ A per-backend timeout is configurable in the TOML config. If all backends fail, 
 - Fail-total (Option A) discards useful data unnecessarily — if Loki is healthy, its results have value even if DataDog is down.
 
 ## Consequences
-- The Fan-out Executor must track per-backend success/failure independently and pass failure metadata to the Renderer alongside result rows.
+- The Dispatcher must track per-backend success/failure independently and pass failure metadata to the Renderer alongside result rows.
 - The Renderer must emit warnings before the result table, not buried after it.
 - JSON/machine-readable output (`--output json`) must include a top-level `warnings` array alongside the `rows` array so scripts can detect partial results programmatically.
