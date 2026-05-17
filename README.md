@@ -25,13 +25,13 @@ The tools are excellent individually. The problem is **the seams between them**.
 
 **OpenWatchIt** is an open-source observability gateway — a CLI, a UI, and a plugin runtime — that lets you query logs, metrics, traces, and profiles across any combination of vendors using a **single, unified query language**.
 
-You write one query. OpenWatchIt fans it out to every configured backend in parallel, translates it to each vendor's native language under the hood, and returns a unified, normalized result.
+You write one query. OpenWatchIt dispatches it to every configured backend in parallel, translates it to each vendor's native language under the hood, and returns a unified, normalized result.
 
-```
-owit query "logs | where level == 'error' and service == 'payments' | last 1h | limit 50"
+```bash
+owit logs --where "level == 'error'" --where "service == 'payments'" --last 1h --limit 50
 ```
 
-That single line hits Loki, Datadog, and CloudWatch simultaneously — you get one result, ranked by timestamp, with a `_source` column showing where each entry came from.
+That single command hits Loki, Datadog, and CloudWatch simultaneously — you get one result, ranked by timestamp, with a `_source` column showing where each entry came from.
 
 No new vendor to learn. No new dashboard to configure. One tool, every source.
 
@@ -41,41 +41,38 @@ No new vendor to learn. No new dashboard to configure. One tool, every source.
 
 ### 1. OpenWatch Query Language (OWL)
 
-A KQL-inspired, pipeline-based query language that maps to every signal type:
+OWL is OpenWatchIt's own query language. It maps to every signal type and has two surfaces:
 
-```sql
--- Logs
-logs | where level == "error"
-    | where service == "checkout"
-    | last 30m
-    | limit 100
+**CLI syntax** — each operator is a flag, the signal type is the subcommand:
 
--- Metrics
-metrics | where __name__ == "http_requests_total"
-    | where env == "prod"
-    | summarize sum(value) by service
-    | order by sum desc
+```bash
+# Logs
+owit logs --where "level == 'error'" --where "service == 'checkout'" --last 30m --limit 100
 
--- Traces
-traces | where duration > 500ms
-    | where root_error == true
-    | project traceId, service, duration, spanCount
-    | limit 20
+# Metrics
+owit metrics --where "__name__ == 'http_requests_total'" --where "env == 'prod'" --summarize "sum(value) by service"
 
--- Profiles
-profiles | where type == "cpu"
-    | where service == "api-gateway"
-    | summarize avg(value) by function
-    | order by avg desc
-    | limit 10
+# Traces
+owit traces --where "duration > 500ms" --where "root_error == true" --limit 20
 
--- Cross-signal correlation (the real power)
+# Profiles
+owit profiles --where "type == 'cpu'" --where "service == 'api-gateway'" --summarize "avg(value) by function" --limit 10
+```
+
+**Pipeline syntax** — used in `owit repl` and `.owl` files:
+
+```
+logs | where level == "error" | where service == "checkout" | last 30m | limit 100
+
+traces | where duration > 500ms | where root_error == true | limit 20
+
+-- Cross-signal correlation
 logs | where level == "error"
     | join traces on traceId
     | project timestamp, message, duration, spanId
 ```
 
-OWL is intentionally readable. A developer who has never used it before should be able to write a useful query in under five minutes.
+Both surfaces produce the same AST internally — the engine sees no difference.
 
 ### 2. Multi-vendor Dispatch
 
@@ -138,10 +135,10 @@ Any developer can publish a plugin. Plugins go through a lightweight verificatio
 **CLI** — designed for engineers who live in the terminal, scripts, CI pipelines, and incident response playbooks:
 
 ```bash
-owit query "traces | where duration > 1s" --output table
-owit query "metrics | where ..." --output json | jq '.[] | .value'
-owit repl  # interactive mode with autocomplete
-owit tail "logs | where service == 'api'"  # streaming, like tail -f
+owit traces --where "duration > 1s" --output table
+owit metrics --where "env == 'prod'" --output json | jq '.[] | .value'
+owit repl                                          # interactive pipeline mode with autocomplete
+owit tail logs --where "service == 'api'"          # streaming, like tail -f
 ```
 
 **UI** — a browser-based interface that connects to an OpenWatchIt server instance, designed for teams who want a shared, visual layer over all their backends. Useful for dashboards, sharing queries, and onboarding.

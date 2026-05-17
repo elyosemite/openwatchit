@@ -2,11 +2,18 @@
 
 ## Signal Type
 
-One of four categories of observability telemetry: **logs**, **metrics**, **traces**, **profiles**. Signal type is declared as the first token in every OWL query (e.g. `logs | ...`, `metrics | ...`). It is not a filter — it defines the shape of the data the query operates on.
+One of four categories of observability telemetry: **logs**, **metrics**, **traces**, **profiles**. Every OWL query targets exactly one signal type. In the CLI, the signal type is the subcommand (`owit traces ...`). In the REPL, it is the first token of the pipeline (`traces | ...`). It is not a filter — it defines the shape of the data the query operates on.
 
 ## OWL (OpenWatch Query Language)
 
-The unified, pipeline-based query language of OpenWatchIt. KQL-inspired syntax using `|` as the pipe operator. An OWL query targets exactly one Signal Type. The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
+The unified query language of OpenWatchIt. OWL has two surface syntaxes that produce the same AST internally:
+
+- **Pipeline syntax** — used in the REPL and `.owl` files. Uses `|` as the pipe operator. Example: `traces | where duration > 1s | last 1h | limit 20`.
+- **CLI syntax** — used on the terminal. The signal type is the subcommand; each operator is a named flag. Example: `owit traces --where "duration > 1s" --last 1h --limit 20`. Avoids shell `|` conflicts entirely.
+
+Both surfaces are translated to the same AST before reaching the OWL Parser. The engine only ever sees the AST — never surface syntax.
+
+An OWL query targets exactly one Signal Type. The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
 
 **v0.1 operator scope:** `where` (row filter), `last <duration>` (relative time window), `limit N` (result truncation), `summarize` (aggregation: `count()`, `avg()`, `sum()`). Operators deferred to later versions: `project`, `order by`, `extend`, `join` (cross-signal join targets v0.2).
 
@@ -42,7 +49,7 @@ A CLI-layer component, not part of the Control Panel. Receives structured result
 
 ## Query Mode vs. Tail Mode
 
-Two distinct execution modes for the CLI. **Query mode** (`owit query`) buffers all results from all backends, sorts by timestamp, and displays a complete ordered result set. **Tail mode** (`owit tail`) streams results continuously as they arrive from backends, in real time, without ordering guarantees — analogous to `tail -f`.
+Two distinct execution modes for the CLI. **Query mode** (`owit <signal-type> [flags]`) buffers all results from all backends, sorts by timestamp, and displays a complete ordered result set. **Tail mode** (`owit tail <signal-type> [flags]`) streams results continuously as they arrive from backends, in real time, without ordering guarantees — analogous to `tail -f`.
 
 ## Plugin
 
