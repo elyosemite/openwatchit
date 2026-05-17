@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-OWL supports joining across signal types (e.g. `logs | join traces on traceId`). This requires querying two different signal types, potentially from different vendor backends, and correlating the results.
+OWL supports joining across signal types (e.g. `owit logs --where "level == 'error'" --join traces --on traceId`). This requires querying two different signal types, potentially from different vendor backends, and correlating the results.
 
 Three approaches were considered:
 - **A**: Core always executes the join in the Result Merger after two parallel fan-outs.

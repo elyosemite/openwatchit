@@ -2,20 +2,20 @@
 
 ## Signal Type
 
-One of four categories of observability telemetry: **logs**, **metrics**, **traces**, **profiles**. Every OWL query targets exactly one signal type. In the CLI, the signal type is the subcommand (`owit traces ...`). In the REPL, it is the first token of the pipeline (`traces | ...`). It is not a filter — it defines the shape of the data the query operates on.
+One of four categories of observability telemetry: **logs**, **metrics**, **traces**, **profiles**. Every OWL query targets exactly one signal type, expressed as the CLI subcommand (`owit traces ...`, `owit logs ...`). It is not a filter — it defines the shape of the data the query operates on.
 
 ## OWL (OpenWatch Query Language)
 
-The unified query language of OpenWatchIt. OWL has two surface syntaxes that produce the same AST internally:
+The unified query language of OpenWatchIt. OWL is expressed exclusively through CLI flags: the signal type is the subcommand and each operator is a named flag.
 
-- **Pipeline syntax** — used in the REPL and `.owl` files. Uses `|` as the pipe operator. Example: `traces | where duration > 1s | last 1h | limit 20`.
-- **CLI syntax** — used on the terminal. The signal type is the subcommand; each operator is a named flag. Example: `owit traces --where "duration > 1s" --last 1h --limit 20`. Avoids shell `|` conflicts entirely.
+```bash
+owit traces --where "duration > 1s" --last 1h --limit 20
+owit logs --where "level == 'error'" --where "service == 'payments'" --last 30m
+```
 
-Both surfaces are translated to the same AST before reaching the OWL Parser. The engine only ever sees the AST — never surface syntax.
+The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
 
-An OWL query targets exactly one Signal Type. The engine translates OWL into each backend's native language; the user never writes PromQL, LogQL, or DogStatsD queries directly.
-
-**v0.1 operator scope:** `where` (row filter), `last <duration>` (relative time window), `limit N` (result truncation), `summarize` (aggregation: `count()`, `avg()`, `sum()`). Operators deferred to later versions: `project`, `order by`, `extend`, `join` (cross-signal join targets v0.2).
+**v0.1 operator scope:** `--where` (row filter), `--last <duration>` (relative time window), `--limit N` (result truncation), `--summarize` (aggregation: `count()`, `avg()`, `sum()`). Operators deferred to later versions: `--project`, `--order-by`, `--extend`, `--join` (cross-signal join targets v0.2).
 
 ## Backend
 
@@ -23,7 +23,7 @@ A configured vendor instance. One entry in the TOML config file. A single vendor
 
 ## Embedded Mode
 
-The default execution model when running `owit query`, `owit tail`, or `owit repl` without a configured server. The Control Panel runs in-process inside the CLI binary. Plugins run as **lazy daemons** — started on first use, reused across subsequent commands, and terminated after an inactivity timeout (default 30s, configurable in TOML). No running server is required.
+The default execution model when running `owit <signal-type>` or `owit tail` without a configured server. The Control Panel runs in-process inside the CLI binary. Plugins run as **lazy daemons** — started on first use, reused across subsequent commands, and terminated after an inactivity timeout (default 30s, configurable in TOML). No running server is required.
 
 ## Remote Mode
 

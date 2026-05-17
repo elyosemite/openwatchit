@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-When a user runs `owit query "logs | ..."` without explicit targeting flags, the Query Planner must decide which backends receive the query.
+When a user runs `owit logs --where "..."` without explicit targeting flags, the Query Planner must decide which backends receive the query.
 
 ## Decision
 The Query Planner fans out to all backends that satisfy both conditions:

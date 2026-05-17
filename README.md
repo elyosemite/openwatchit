@@ -41,9 +41,7 @@ No new vendor to learn. No new dashboard to configure. One tool, every source.
 
 ### 1. OpenWatch Query Language (OWL)
 
-OWL is OpenWatchIt's own query language. It maps to every signal type and has two surfaces:
-
-**CLI syntax** — each operator is a flag, the signal type is the subcommand:
+OWL is OpenWatchIt's own query language. The signal type is the subcommand; each operator is a named flag:
 
 ```bash
 # Logs
@@ -59,20 +57,7 @@ owit traces --where "duration > 500ms" --where "root_error == true" --limit 20
 owit profiles --where "type == 'cpu'" --where "service == 'api-gateway'" --summarize "avg(value) by function" --limit 10
 ```
 
-**Pipeline syntax** — used in `owit repl` and `.owl` files:
-
-```
-logs | where level == "error" | where service == "checkout" | last 30m | limit 100
-
-traces | where duration > 500ms | where root_error == true | limit 20
-
--- Cross-signal correlation
-logs | where level == "error"
-    | join traces on traceId
-    | project timestamp, message, duration, spanId
-```
-
-Both surfaces produce the same AST internally — the engine sees no difference.
+OWL is intentionally readable. A developer who has never used it before should be able to write a useful query in under five minutes.
 
 ### 2. Multi-vendor Dispatch
 
@@ -80,16 +65,16 @@ Queries are dispatched to multiple backends in parallel. By default, a query is 
 
 ```bash
 # All default backends matching the signal type
-owit query "logs | where level == 'error'"
+owit logs --where "level == 'error'"
 
 # Specific backends
-owit query --backends loki,datadog "logs | where service == 'api'"
+owit logs --where "service == 'api'" --backends loki,datadog
 
 # All backends of a given type, regardless of default flag
-owit query --type logs "logs | where level == 'error'"
+owit logs --where "level == 'error'" --type logs
 
 # All backends with a given tag
-owit query --tag prod "metrics | where __name__ == 'http_requests_total'"
+owit metrics --where "__name__ == 'http_requests_total'" --tag prod
 ```
 
 Results arrive as backends respond. Slow backends don't block fast ones. If a backend fails, you get results from the healthy backends plus an explicit warning — never silent partial data.
@@ -137,7 +122,6 @@ Any developer can publish a plugin. Plugins go through a lightweight verificatio
 ```bash
 owit traces --where "duration > 1s" --output table
 owit metrics --where "env == 'prod'" --output json | jq '.[] | .value'
-owit repl                                          # interactive pipeline mode with autocomplete
 owit tail logs --where "service == 'api'"          # streaming, like tail -f
 ```
 
@@ -219,7 +203,7 @@ tags    = ["staging", "logs", "metrics"]
 You can query by tag:
 
 ```bash
-owit query --tag prod "logs | where level == 'error' | last 1h"
+owit logs --where "level == 'error'" --last 1h --tag prod
 ```
 
 ---

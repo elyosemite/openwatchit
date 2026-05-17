@@ -9,7 +9,7 @@ The README describes two usage patterns: `owit query` (direct CLI use by an engi
 ## Decision
 The `owit` binary operates in two modes:
 
-**Embedded mode (default):** `owit query`, `owit tail`, `owit repl` spin up the Control Panel in-process. No server required. Plugins are spawned as child processes by the CLI and terminated when the command finishes. The user's TOML config is read from the local filesystem.
+**Embedded mode (default):** `owit <signal-type>` and `owit tail` spin up the Control Panel in-process. No server required. Plugins are spawned as child processes by the CLI and terminated when the command finishes. The user's TOML config is read from the local filesystem.
 
 **Remote mode:** If a `server_url` is set in the TOML config (or passed via `--server`), the CLI acts as a thin client — it sends the OWL query to the remote Control Panel over HTTP/gRPC and streams back results. The remote server manages plugins and backend config centrally.
 
