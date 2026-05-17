@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package openwatchit.v1;
+
+option go_package = "github.com/elyosemite/openwatchit/proto/gen/go;owlv1";
+
+// ResultRow is a single normalised row returned by a plugin.
+// Contains two layers:
+//   - Canonical fields: semantically named fields every plugin must populate.
+//   - Passthrough fields: vendor-specific fields with native names, no uniformity guarantee.
+message ResultRow {
+  // Canonical fields — required by every plugin for every signal type.
+  // OWL joins and correlations operate exclusively on these fields.
+  string timestamp = 1; // RFC 3339 — e.g. "2026-05-17T03:00:00Z"
+  string source    = 2; // backend name as declared in TOML config (maps to _source in output)
+
+  // Canonical fields — populated when present in the vendor's data.
+  string service   = 3;
+  string level     = 4; // logs: "error", "warn", "info", etc.
+  string message   = 5; // logs: log line body
+  string trace_id  = 6; // traces/logs: distributed trace identifier
+  string span_id   = 7; // traces: span identifier
+
+  // Passthrough fields — vendor-specific, native names preserved.
+  // No cross-vendor uniformity guarantee.
+  map<string, string> passthrough = 8;
+}
+
+// QueryWarning describes a per-backend failure during a fan-out query.
+message QueryWarning {
+  string backend = 1; // backend name from TOML config
+  string reason  = 2; // human-readable error: "timeout after 30s", "authentication failed", etc.
+}
