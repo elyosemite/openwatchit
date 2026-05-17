@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package openwatchit.v1;
+
+option go_package = "github.com/elyosemite/openwatchit/proto/gen/go;owlv1";
+
+// SignalType identifies the category of observability telemetry being queried.
+enum SignalType {
+  SIGNAL_TYPE_UNSPECIFIED = 0;
+  SIGNAL_TYPE_LOGS        = 1;
+  SIGNAL_TYPE_METRICS     = 2;
+  SIGNAL_TYPE_TRACES      = 3;
+  SIGNAL_TYPE_PROFILES    = 4;
+}
+
+// FilterOperator maps to the OData-inspired operator vocabulary of OWL.
+enum FilterOperator {
+  FILTER_OPERATOR_UNSPECIFIED = 0;
+  FILTER_OPERATOR_EQ          = 1; // eq  — equal
+  FILTER_OPERATOR_NE          = 2; // ne  — not equal
+  FILTER_OPERATOR_GT          = 3; // gt  — greater than
+  FILTER_OPERATOR_GE          = 4; // ge  — greater than or equal
+  FILTER_OPERATOR_LT          = 5; // lt  — less than
+  FILTER_OPERATOR_LE          = 6; // le  — less than or equal
+  FILTER_OPERATOR_CONTAINS    = 7; // contains — substring match
+}
+
+// FilterNode represents a single positional filter triplet: field op value.
+// e.g. `level eq error` or the shorthand `level=error` (expanded to eq).
+message FilterNode {
+  string         field    = 1;
+  FilterOperator operator = 2;
+  string         value    = 3;
+}
+
+// TimeWindow encodes the --last flag as a resolved duration in seconds.
+message TimeWindow {
+  uint64 duration_seconds = 1;
+}
+
+// SummarizeExpr encodes the --summarize flag value as a raw expression string.
+// e.g. "count() by service" or "avg(value) by function"
+message SummarizeExpr {
+  string expression = 1;
+}
+
+// QueryAST is the structured representation of a complete OWL query.
+// Plugins receive this via TranslateRequest — never raw OWL text.
+message QueryAST {
+  SignalType          signal_type = 1;
+  repeated FilterNode filters     = 2;
+  TimeWindow          time_window = 3; // optional; absent means no time constraint
+  uint32              limit       = 4; // 0 means no limit
+  SummarizeExpr       summarize   = 5; // optional
+}
