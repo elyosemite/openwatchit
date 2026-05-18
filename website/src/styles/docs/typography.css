@@ -1,0 +1,20 @@
+/* h1[id="_top"] targets the page title from frontmatter, rendered by Starlight's
+   PageTitle component outside .sl-markdown-content */
+h1[id="_top"]{
+  font-family: var(--font-serif);
+  font-weight: 100;
+  letter-spacing: -0.01em;
+}
+
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6 {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  letter-spacing: -0.01em;
+  margin-top: 3rem;    /* 48px */
+  margin-bottom: 1rem; /* 16px */
+}
