@@ -12,9 +12,41 @@ jobs:
   release-please:
     name: Open release PR
     runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  changelog:
+    name: Generate changelog entry
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog for ${{ needs.release-please.outputs.tag_name }}
+        uses: orhun/git-cliff-action@v3
+        with:
+          config: cliff.toml
+          args: --latest
+        env:
+          OUTPUT: changelog/${{ needs.release-please.outputs.tag_name }}.md
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add changelog/${{ needs.release-please.outputs.tag_name }}.md
+          git diff --staged --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "docs: changelog ${{ needs.release-please.outputs.tag_name }}"
+          git push origin HEAD:main
