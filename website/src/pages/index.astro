@@ -1,6 +1,8 @@
 ---
 import '../styles/landing.css';
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 const features = [
   {
     icon: '⚡',
@@ -60,8 +62,8 @@ const vendors = [
       OpenWatchIt
     </a>
     <div class="nav-links">
-      <a href="/getting-started/introduction/">Documentation</a>
-      <a href="/changelog/">Changelog</a>
+      <a href={`${base}/getting-started/introduction/`}>Documentation</a>
+      <a href={`${base}/changelog/`}>Changelog</a>
       <a href="https://github.com/elyosemite/openwatchit" class="nav-cta" target="_blank">GitHub</a>
     </div>
   </div>
@@ -79,7 +81,7 @@ const vendors = [
       Query logs, metrics, traces, and profiles across Loki, DataDog, Prometheus, CloudWatch and more — with a single command.
     </p>
     <div class="hero-actions">
-      <a href="/getting-started/introduction/" class="btn-primary">Get started →</a>
+      <a href={`${base}/getting-started/introduction/`} class="btn-primary">Get started →</a>
       <a href="https://github.com/elyosemite/openwatchit" class="btn-secondary" target="_blank">View on GitHub</a>
     </div>
 
@@ -233,7 +235,7 @@ const vendors = [
       <h2 class="cta-title">Ready to unify your observability stack?</h2>
       <p class="cta-sub">Open source, MIT licensed, no vendor lock-in.</p>
       <div class="hero-actions">
-        <a href="/getting-started/introduction/" class="btn-primary">Read the docs →</a>
+        <a href={`${base}/getting-started/introduction/`} class="btn-primary">Read the docs →</a>
         <a href="https://github.com/elyosemite/openwatchit" class="btn-secondary" target="_blank">Star on GitHub</a>
       </div>
     </div>
@@ -246,8 +248,8 @@ const vendors = [
     <p>
       OpenWatchIt is MIT-licensed open source software ·
       <a href="https://github.com/elyosemite/openwatchit" target="_blank">GitHub</a> ·
-      <a href="/getting-started/introduction/">Docs</a> ·
-      <a href="/changelog/">Changelog</a>
+      <a href={`${base}/getting-started/introduction/`}>Docs</a> ·
+      <a href={`${base}/changelog/`}>Changelog</a>
     </p>
   </div>
 </footer>

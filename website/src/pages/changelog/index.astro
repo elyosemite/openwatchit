@@ -22,7 +22,7 @@ const sorted = entries.sort((a, b) => {
   <ul>
     {sorted.map((entry) => (
       <li>
-        <a href={`/changelog/${entry.id}/`}>
+        <a href={`${import.meta.env.BASE_URL}changelog/${entry.id}/`}>
           <strong>{entry.id}</strong>
         </a>
       </li>
