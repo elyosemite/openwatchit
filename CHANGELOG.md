@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.5](https://github.com/elyosemite/openwatchit/compare/v0.4.4...v0.4.5) (2026-05-18)
+
+
+### Bug Fixes
+
+* update changelog paths and configurations for website deployment ([3ad16f9](https://github.com/elyosemite/openwatchit/commit/3ad16f91fdd22fe3c5c8e0df01db8dd81be84fca))
+
 ## [0.4.4](https://github.com/elyosemite/openwatchit/compare/v0.4.3...v0.4.4) (2026-05-18)
 
 
