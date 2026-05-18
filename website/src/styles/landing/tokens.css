@@ -1,0 +1,49 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Override Starlight global dark theme injected by the integration */
+html, html[data-theme], html[data-theme="light"] {
+  --sl-color-bg:             #ffffff !important;
+  --sl-color-bg-nav:         #ffffff !important;
+  --sl-color-bg-sidebar:     #f8fafc !important;
+  --sl-color-hairline-light: #e2e8f0 !important;
+  --sl-color-hairline:       #e2e8f0 !important;
+  --sl-color-text:           #0f172a !important;
+  --sl-color-text-accent:    #4f46e5 !important;
+  color-scheme: light !important;
+}
+
+html { background: #ffffff !important; }
+body { background: #ffffff !important; color: #0f172a !important; }
+
+:root {
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans:  'Segoe UI', system-ui, sans-serif;
+
+  --bg:             #ffffff;
+  --bg-subtle:      #f8fafc;
+  --bg-section:     #f1f5f9;
+  --border:         #e2e8f0;
+  --border-strong:  #cbd5e1;
+  --text:           #0f172a;
+  --text-secondary: #334155;
+  --muted:          #64748b;
+  --accent:         #4f46e5;
+  --accent-hover:   #4338ca;
+  --accent-light:   #eef2ff;
+  --accent-border:  #c7d2fe;
+  --green:          #15803d;
+  --green-light:    #dcfce7;
+  --amber:          #b45309;
+  --amber-light:    #fef3c7;
+  --red:            #dc2626;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}

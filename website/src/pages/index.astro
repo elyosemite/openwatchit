@@ -1,0 +1,256 @@
+---
+import '../styles/landing.css';
+
+const features = [
+  {
+    icon: '⚡',
+    title: 'One command, every backend',
+    description:
+      'Fan-out to Loki, DataDog, Prometheus, CloudWatch, and more in parallel. One ordered result, every time.',
+  },
+  {
+    icon: '🔌',
+    title: 'Plugin architecture',
+    description:
+      'Every vendor is a standalone gRPC plugin. Write yours in Go, Rust, Python — anything with gRPC support.',
+  },
+  {
+    icon: '🛡️',
+    title: 'No silent failures',
+    description:
+      'If a backend is unreachable you get an explicit warning alongside partial results — never silent data loss.',
+  },
+  {
+    icon: '🔒',
+    title: 'Secure by default',
+    description:
+      'Credentials are always environment variable references. Plaintext secrets in config are rejected at startup.',
+  },
+];
+
+const vendors = [
+  { name: 'Grafana Loki',        signal: 'Logs',                  version: 'v0.1' },
+  { name: 'Prometheus',          signal: 'Metrics',               version: 'v0.1' },
+  { name: 'Grafana Tempo',       signal: 'Traces',                version: 'v0.1' },
+  { name: 'Jaeger',              signal: 'Traces',                version: 'v0.2' },
+  { name: 'DataDog',             signal: 'Logs, Metrics, Traces', version: 'v0.2' },
+  { name: 'AWS CloudWatch',      signal: 'Logs, Metrics',         version: 'v0.2' },
+  { name: 'Azure AppInsights',   signal: 'Logs, Metrics, Traces', version: 'v0.3' },
+  { name: 'Elasticsearch',       signal: 'Logs',                  version: 'Community' },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenWatchIt — One Query Language for All Your Observability Backends</title>
+  <meta name="description" content="Query logs, metrics, traces, and profiles across every observability vendor with a single command." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Fira+Code:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container nav-inner">
+    <a href="/" class="logo">
+      OpenWatchIt
+    </a>
+    <div class="nav-links">
+      <a href="/getting-started/introduction/">Documentation</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="https://github.com/elyosemite/openwatchit" class="nav-cta" target="_blank">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Open Source · MIT License</div>
+    <h1>
+      One query language for<br />
+      <em>all your observability</em> backends
+    </h1>
+    <p class="hero-sub">
+      Query logs, metrics, traces, and profiles across Loki, DataDog, Prometheus, CloudWatch and more — with a single command.
+    </p>
+    <div class="hero-actions">
+      <a href="/getting-started/introduction/" class="btn-primary">Get started →</a>
+      <a href="https://github.com/elyosemite/openwatchit" class="btn-secondary" target="_blank">View on GitHub</a>
+    </div>
+
+    <!-- Terminal mockup -->
+    <div class="terminal-wrap">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <span class="terminal-title">terminal</span>
+        </div>
+        <div class="terminal-body">
+
+          <span class="t-comment"># 1. find errors across all backends</span>
+          <span class="t-gap"></span>
+          <div>
+            <span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit logs</span><span class="t-filter"> level=error service=checkout</span><span class="t-flag"> --last</span> <span class="t-val">30m</span><span class="t-flag"> --limit</span> <span class="t-val">4</span>
+          </div>
+          <span class="t-sep"></span>
+          <div class="t-header"><span style="display:inline-block;width:100px">SOURCE</span><span style="display:inline-block;width:155px">TIMESTAMP</span><span style="display:inline-block;width:52px">LEVEL</span><span style="display:inline-block;width:105px">SERVICE</span><span style="display:inline-block;width:110px">TRACE ID</span><span>MESSAGE</span></div>
+          <div class="t-row"><span class="t-source">loki</span><span class="t-time">03:21:04</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">failed to charge: stripe timeout</span></div>
+          <div class="t-row"><span class="t-source">loki</span><span class="t-time">03:21:07</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">retrying payment processor</span></div>
+          <div class="t-row"><span class="t-source">datadog</span><span class="t-time">03:21:09</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">payment-svc unreachable</span></div>
+          <div class="t-row"><span class="t-source">datadog</span><span class="t-time">03:21:12</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">e5f6g7h8</span><span class="t-msg">order rollback triggered</span></div>
+          <div class="t-warn">⚠ cloudwatch: connection refused</div>
+
+          <span class="t-sep" style="margin-top:0.9rem"></span>
+
+          <span class="t-comment"># 2. correlate with traces using the trace id</span>
+          <span class="t-gap"></span>
+          <div>
+            <span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit traces</span><span class="t-filter"> trace_id=a1b2c3d4</span><span class="t-flag"> --last</span> <span class="t-val">30m</span>
+          </div>
+          <span class="t-sep"></span>
+          <div class="t-header"><span style="display:inline-block;width:100px">SOURCE</span><span style="display:inline-block;width:155px">TIMESTAMP</span><span style="display:inline-block;width:85px">DURATION</span><span style="display:inline-block;width:70px">STATUS</span><span>SERVICE</span></div>
+          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">842ms</span><span class="t-status">error</span><span class="t-svc">checkout → payment-svc → stripe-proxy</span></div>
+          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">831ms</span><span class="t-status">error</span><span class="t-svc">payment-svc → stripe-proxy</span></div>
+          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">timeout</span><span class="t-status">error</span><span class="t-svc">stripe-proxy</span></div>
+          <span class="t-gap"></span>
+          <div><span class="t-prompt">›</span>&nbsp;<span class="t-cursor"></span></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <div class="container">
+    <p class="section-label">Why OpenWatchIt</p>
+    <h2 class="section-title">Built for the seams between tools</h2>
+    <p class="section-sub">The individual tools are excellent. The problem is having to navigate between them.</p>
+    <div class="features-grid">
+      {features.map(f => (
+        <div class="feature-card">
+          <span class="feature-icon">{f.icon}</span>
+          <div class="feature-title">{f.title}</div>
+          <div class="feature-desc">{f.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">From one command to every backend</h2>
+    <p class="section-sub">A thin engine translates a single OWL query into vendor-native requests, fans out in parallel, and merges the results.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Configure your backends</div>
+          <div class="step-desc">
+            Drop a TOML file at <span class="inline-code">~/.owit/config.toml</span> with vendor URLs and credentials as environment variable references.
+            Mark each backend <span class="inline-code">default = true</span> to include it in fan-out by default.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Install plugins for your vendors</div>
+          <div class="step-desc">
+            Each vendor integration is a standalone plugin binary installed at <span class="inline-code">~/.owit/plugins/</span>.
+            Plugins start lazily and stay alive across commands to avoid cold-start overhead.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Write one OWL query</div>
+          <div class="step-desc">Positional filter triplets, named flags, signal type as the subcommand. No new syntax to learn — it reads like a shell command.</div>
+          <span class="step-code">owit traces duration gt 500ms --last 1h --limit 20</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Get a unified, normalised result</div>
+          <div class="step-desc">Results from all backends are merged and sorted by timestamp. Backend failures surface as explicit per-backend warnings — never silent data loss.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vendor support -->
+<section class="section">
+  <div class="container">
+    <p class="section-label">Vendor support</p>
+    <h2 class="section-title">Every backend, one language</h2>
+    <p class="section-sub">Official plugins for the most common vendors. Community plugins for the rest.</p>
+    <div class="vendor-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Vendor</th>
+            <th>Signal types</th>
+            <th>Target release</th>
+          </tr>
+        </thead>
+        <tbody>
+          {vendors.map(v => (
+            <tr>
+              <td style="font-weight:600;color:var(--text)">{v.name}</td>
+              <td>{v.signal}</td>
+              <td>
+                {v.version === 'v0.1'      && <span class="badge badge-v01">v0.1</span>}
+                {v.version === 'v0.2'      && <span class="badge badge-v02">v0.2</span>}
+                {v.version === 'v0.3'      && <span class="badge badge-v03">v0.3</span>}
+                {v.version === 'Community' && <span class="badge badge-comm">Community</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <h2 class="cta-title">Ready to unify your observability stack?</h2>
+      <p class="cta-sub">Open source, MIT licensed, no vendor lock-in.</p>
+      <div class="hero-actions">
+        <a href="/getting-started/introduction/" class="btn-primary">Read the docs →</a>
+        <a href="https://github.com/elyosemite/openwatchit" class="btn-secondary" target="_blank">Star on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>
+      OpenWatchIt is MIT-licensed open source software ·
+      <a href="https://github.com/elyosemite/openwatchit" target="_blank">GitHub</a> ·
+      <a href="/getting-started/introduction/">Docs</a> ·
+      <a href="/changelog/">Changelog</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+const entries = await getCollection('changelog');
+
+// Sort versions descending: v1.0.0 before v0.1.0
+const sorted = entries.sort((a, b) => {
+  const toNum = (id: string) =>
+    id.replace(/^v/, '').split('.').map(Number);
+  const [aMaj, aMin, aPatch] = toNum(a.id);
+  const [bMaj, bMin, bPatch] = toNum(b.id);
+  if (bMaj !== aMaj) return bMaj - aMaj;
+  if (bMin !== aMin) return bMin - aMin;
+  return bPatch - aPatch;
+});
+---
+
+<StarlightPage frontmatter={{ title: 'Changelog', description: 'Release history for OpenWatchIt.' }}>
+  <p>All notable changes to OpenWatchIt are documented here, organised by release version.</p>
+
+  <ul>
+    {sorted.map((entry) => (
+      <li>
+        <a href={`/changelog/${entry.id}/`}>
+          <strong>{entry.id}</strong>
+        </a>
+      </li>
+    ))}
+  </ul>
+</StarlightPage>

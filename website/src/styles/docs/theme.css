@@ -1,0 +1,15 @@
+:root[data-theme='dark'] {
+  --sl-color-bg:         rgb(13 13 13);
+  --sl-color-bg-nav:     rgb(13 13 13);
+  --sl-color-bg-sidebar: rgb(13 13 13);
+}
+
+[data-theme='dark'] body,
+[data-theme='dark'] header,
+[data-theme='dark'] .sidebar,
+[data-theme='dark'] nav,
+[data-theme='dark'] .header,
+[data-theme='dark'] .page,
+[data-theme='dark'] .content-panel {
+  background-color: rgb(13 13 13) !important;
+}

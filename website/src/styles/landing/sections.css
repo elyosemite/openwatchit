@@ -1,0 +1,161 @@
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── Section layout ──────────────────────────────────── */
+.section { padding: 5rem 0; }
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* ── Features grid ───────────────────────────────────── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--border);
+}
+.feature-card {
+  background: white;
+  padding: 1.75rem;
+  transition: background 0.15s;
+}
+.feature-card:hover { background: var(--bg-subtle); }
+.feature-icon  { font-size: 1.5rem; margin-bottom: 0.875rem; display: block; }
+.feature-title { font-weight: 700; color: var(--text); margin-bottom: 0.4rem; font-size: 0.975rem; }
+.feature-desc  { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+/* ── How it works ────────────────────────────────────── */
+.section-alt { background: var(--bg-subtle); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.steps { display: flex; flex-direction: column; gap: 0; margin-top: 3rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: white;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.step:last-child { border-bottom: none; }
+.step:hover { background: var(--bg-subtle); }
+.step-num {
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.1rem;
+  border: 1px solid var(--accent-border);
+  flex-shrink: 0;
+}
+.step-title { font-weight: 700; color: var(--text); margin-bottom: 0.3rem; font-size: 0.975rem; }
+.step-desc  { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+.step-code  {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  border-radius: 5px;
+  padding: 0.2rem 0.55rem;
+  margin-top: 0.5rem;
+}
+.inline-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  background: var(--bg-subtle);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+}
+
+/* ── Vendor table ────────────────────────────────────── */
+.vendor-table-wrap {
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+thead { background: var(--bg-subtle); }
+th {
+  text-align: left;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg-subtle); }
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.badge-v01  { background: var(--accent-light);  color: var(--accent); border: 1px solid var(--accent-border); }
+.badge-v02  { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+.badge-v03  { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; }
+.badge-comm { background: var(--green-light);  color: var(--green); border: 1px solid #86efac; }
+
+/* ── CTA ─────────────────────────────────────────────── */
+.cta-section {
+  padding: 5rem 0;
+  text-align: center;
+  background: var(--bg-section);
+  border-top: 1px solid var(--border);
+}
+.cta-inner { max-width: 560px; margin: 0 auto; }
+.cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+}
+.cta-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
