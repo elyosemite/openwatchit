@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/elyosemite/openwatchit/compare/v0.4.0...v0.4.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* update git-cliff installation to use versioned URL ([bd4de21](https://github.com/elyosemite/openwatchit/commit/bd4de213823ceef21773623bf381dc383662c9cf))
+
 ## [0.4.0](https://github.com/elyosemite/openwatchit/compare/v0.3.0...v0.4.0) (2026-05-18)
 
 
