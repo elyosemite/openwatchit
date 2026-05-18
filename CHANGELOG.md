@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/elyosemite/openwatchit/compare/v0.4.2...v0.4.3) (2026-05-18)
+
+
+### Bug Fixes
+
+* improve changelog commit logic and trigger website deployment ([61c21c7](https://github.com/elyosemite/openwatchit/commit/61c21c79d3dae636b3ee1717c0d31f7a8cfa7c7e))
+
 ## [0.4.2](https://github.com/elyosemite/openwatchit/compare/v0.4.1...v0.4.2) (2026-05-18)
 
 
