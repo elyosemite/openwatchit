@@ -1,0 +1,35 @@
+name: Generate changelog on release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  changelog:
+    name: Generate changelog entry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # git-cliff needs full history to find the previous tag
+
+      - name: Generate changelog for ${{ github.ref_name }}
+        uses: orhun/git-cliff-action@v3
+        with:
+          config: cliff.toml
+          args: --latest
+        env:
+          OUTPUT: changelog/${{ github.ref_name }}.md
+
+      - name: Commit and push changelog entry
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add changelog/${{ github.ref_name }}.md
+          git diff --staged --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "docs: changelog ${{ github.ref_name }}"
+          git push origin HEAD:main
