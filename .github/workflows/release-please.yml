@@ -49,10 +49,22 @@ jobs:
             --output "changelog/${{ needs.release-please.outputs.tag_name }}.md"
 
       - name: Commit and push
+        id: push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add changelog/${{ needs.release-please.outputs.tag_name }}.md
-          git diff --staged --quiet && echo "Nothing to commit" && exit 0
-          git commit -m "docs: changelog ${{ needs.release-please.outputs.tag_name }}"
-          git push origin HEAD:main
+          if git diff --staged --quiet; then
+            echo "Nothing to commit"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "docs: changelog ${{ needs.release-please.outputs.tag_name }}"
+            git push origin HEAD:main
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger website deployment
+        if: steps.push.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy-website.yml --ref main
