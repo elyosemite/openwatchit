@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/elyosemite/openwatchit/compare/v0.3.0...v0.4.0) (2026-05-18)
+
+
+### Features
+
+* update changelog generation to use git-cliff directly ([ebfbeb2](https://github.com/elyosemite/openwatchit/commit/ebfbeb25719542e86f49e9a23edfa6e2424ba9a3))
+
 ## [0.3.0](https://github.com/elyosemite/openwatchit/compare/v0.2.0...v0.3.0) (2026-05-18)
 
 
