@@ -1,8 +1,17 @@
 :root {
   --font-serif: 'Lora', Georgia, serif;
+  --font-sans:  'Segoe UI', system-ui, sans-serif;
+  --sl-font:    var(--font-sans);
 }
 
 .sl-markdown-content {
   font-size: 1rem;
   line-height: 1.65rem;
+}
+
+.sl-markdown-content p,
+.sl-markdown-content li,
+.sl-markdown-content td,
+.sl-markdown-content th {
+  font-family: var(--font-sans);
 }

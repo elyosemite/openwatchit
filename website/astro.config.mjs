@@ -28,7 +28,7 @@ export default defineConfig({
 					tag: 'link',
 					attrs: {
 						rel: 'stylesheet',
-						href: 'https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap',
+						href: 'https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap',
 					},
 				},
 			],

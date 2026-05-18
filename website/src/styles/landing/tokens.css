@@ -17,6 +17,7 @@ body { background: #ffffff !important; color: #0f172a !important; }
 
 :root {
   --font-serif: 'Lora', Georgia, serif;
+  --font-sans:  'Segoe UI', system-ui, sans-serif;
 
   --bg:             #ffffff;
   --bg-subtle:      #f8fafc;
@@ -42,7 +43,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
   overflow-x: hidden;
 }
