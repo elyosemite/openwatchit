@@ -49,14 +49,14 @@ jobs:
       - name: Generate changelog for ${{ needs.release-please.outputs.tag_name }}
         run: |
           git-cliff --config cliff.toml --latest \
-            --output "changelog/${{ needs.release-please.outputs.tag_name }}.md"
+            --output "website/changelog/${{ needs.release-please.outputs.tag_name }}.md"
 
       - name: Commit and push
         id: push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add changelog/${{ needs.release-please.outputs.tag_name }}.md
+          git add website/changelog/${{ needs.release-please.outputs.tag_name }}.md
           if git diff --staged --quiet; then
             echo "Nothing to commit"
             echo "changed=false" >> $GITHUB_OUTPUT
