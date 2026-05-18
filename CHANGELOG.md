@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/elyosemite/openwatchit/compare/v0.2.0...v0.3.0) (2026-05-18)
+
+
+### Features
+
+* enhance release workflow to generate and commit changelog entries ([1c31566](https://github.com/elyosemite/openwatchit/commit/1c315667c8599ed9e3c0cd8dcde0592aa6cccd02))
+
 ## [0.2.0](https://github.com/elyosemite/openwatchit/compare/v0.1.0...v0.2.0) (2026-05-18)
 
 
