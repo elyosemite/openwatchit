@@ -1,9 +1,9 @@
-/* h1[id="_top"] targets the page title from frontmatter, rendered by Starlight's
-   PageTitle component outside .sl-markdown-content */
-h1[id="_top"]{
+/* Page title rendered by Starlight's PageTitle component */
+h1[id="_top"] {
   font-family: var(--font-serif);
-  font-weight: 100;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 .sl-markdown-content h1,
@@ -13,8 +13,25 @@ h1[id="_top"]{
 .sl-markdown-content h5,
 .sl-markdown-content h6 {
   font-family: var(--font-serif);
-  font-weight: 100;
-  letter-spacing: -0.01em;
-  margin-top: 3rem;    /* 48px */
-  margin-bottom: 1rem; /* 16px */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 2.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.sl-markdown-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--sl-color-hairline-light);
+  padding-bottom: 0.5rem;
+}
+
+.sl-markdown-content h3 { font-size: 1.2rem; }
+
+/* Version headings in changelog get orange left border */
+.sl-markdown-content h2:first-of-type {
+  border-left: 3px solid var(--sl-color-accent);
+  padding-left: 0.875rem;
+  border-bottom: none;
+  padding-bottom: 0;
 }

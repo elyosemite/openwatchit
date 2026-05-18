@@ -5,32 +5,34 @@ html, html[data-theme], html[data-theme="light"] {
   --sl-color-bg:             #ffffff !important;
   --sl-color-bg-nav:         #ffffff !important;
   --sl-color-bg-sidebar:     #f8fafc !important;
-  --sl-color-hairline-light: #e2e8f0 !important;
-  --sl-color-hairline:       #e2e8f0 !important;
-  --sl-color-text:           #0f172a !important;
-  --sl-color-text-accent:    #4f46e5 !important;
+  --sl-color-hairline-light: #e5e7eb !important;
+  --sl-color-hairline:       #e5e7eb !important;
+  --sl-color-text:           #111210 !important;
+  --sl-color-text-accent:    #c2410c !important;
   color-scheme: light !important;
 }
 
 html { background: #ffffff !important; }
-body { background: #ffffff !important; color: #0f172a !important; }
+body { background: #ffffff !important; color: #111210 !important; }
 
 :root {
   --font-serif: 'Lora', Georgia, serif;
-  --font-sans:  'Segoe UI', system-ui, sans-serif;
+  --font-sans:  'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
 
   --bg:             #ffffff;
-  --bg-subtle:      #f8fafc;
-  --bg-section:     #f1f5f9;
-  --border:         #e2e8f0;
-  --border-strong:  #cbd5e1;
-  --text:           #0f172a;
-  --text-secondary: #334155;
-  --muted:          #64748b;
-  --accent:         #4f46e5;
-  --accent-hover:   #4338ca;
-  --accent-light:   #eef2ff;
-  --accent-border:  #c7d2fe;
+  --bg-subtle:      #fafaf9;
+  --bg-section:     #f5f1ec;
+  --bg-dark:        #111210;
+  --border:         #e5e7eb;
+  --border-strong:  #d1d5db;
+  --text:           #111210;
+  --text-secondary: #374151;
+  --muted:          #6b7280;
+  --accent:         #c2410c;
+  --accent-hover:   #9a3412;
+  --accent-light:   #fff7ed;
+  --accent-border:  #fed7aa;
   --green:          #15803d;
   --green-light:    #dcfce7;
   --amber:          #b45309;

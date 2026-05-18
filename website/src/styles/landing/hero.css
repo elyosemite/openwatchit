@@ -1,8 +1,10 @@
 .hero {
   padding: 6rem 0 5rem;
   text-align: center;
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -10,37 +12,47 @@
   background: var(--accent-light);
   color: var(--accent);
   border: 1px solid var(--accent-border);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.3rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.9rem;
   border-radius: 999px;
   margin-bottom: 2rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
 }
+
 .hero h1 {
   font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 5.5vw, 3.75rem);
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.13;
+  letter-spacing: -0.02em;
   color: var(--text);
   margin-bottom: 1.5rem;
-  max-width: 820px;
+  max-width: 840px;
   margin-left: auto;
   margin-right: auto;
+  text-wrap: balance;
 }
+
 .hero h1 em {
   font-style: normal;
   color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
 }
+
 .hero-sub {
-  font-size: 1.125rem;
+  font-size: 1.075rem;
   color: var(--text-secondary);
-  max-width: 540px;
+  max-width: 510px;
   margin: 0 auto 2.5rem;
-  line-height: 1.75;
+  line-height: 1.8;
 }
+
 .hero-actions {
   display: flex;
   gap: 0.75rem;
@@ -48,31 +60,43 @@
   flex-wrap: wrap;
   margin-bottom: 4rem;
 }
+
 .btn-primary {
   background: var(--accent);
   color: white;
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.7rem 1.6rem;
-  border-radius: 8px;
+  font-size: 0.925rem;
+  padding: 0.7rem 1.65rem;
+  border-radius: 7px;
   text-decoration: none;
   transition: background 0.15s, transform 0.1s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  touch-action: manipulation;
 }
 .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-primary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 7px;
+}
+
 .btn-secondary {
   background: white;
   border: 1px solid var(--border-strong);
   color: var(--text-secondary);
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.7rem 1.6rem;
-  border-radius: 8px;
+  font-size: 0.925rem;
+  padding: 0.7rem 1.65rem;
+  border-radius: 7px;
   text-decoration: none;
   transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  touch-action: manipulation;
 }
 .btn-secondary:hover {
-  border-color: var(--border-strong);
   background: var(--bg-subtle);
   transform: translateY(-1px);
+}
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 7px;
 }

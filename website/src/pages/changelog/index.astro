@@ -5,7 +5,6 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const entries = await getCollection('changelog');
 
-// Sort versions descending: v1.0.0 before v0.1.0
 const sorted = entries.sort((a, b) => {
   const toNum = (id: string) =>
     id.replace(/^v/, '').split('.').map(Number);
@@ -15,18 +14,66 @@ const sorted = entries.sort((a, b) => {
   if (bMin !== aMin) return bMin - aMin;
   return bPatch - aPatch;
 });
+
+const latest = sorted[0];
 ---
 
 <StarlightPage frontmatter={{ title: 'Changelog', description: 'Release history for OpenWatchIt.' }}>
   <p>All notable changes to OpenWatchIt are documented here, organised by release version.</p>
 
-  <ul>
-    {sorted.map((entry) => (
-      <li>
-        <a href={`${base}/changelog/${entry.id}/`}>
-          <strong>{entry.id}</strong>
-        </a>
-      </li>
+  <div class="cl-list">
+    {sorted.map((entry, i) => (
+      <a href={`${base}/changelog/${entry.id}/`} class={`cl-entry${i === 0 ? ' cl-entry--latest' : ''}`}>
+        <span class="cl-version">{entry.id}</span>
+        {i === 0 && <span class="cl-badge">Latest</span>}
+      </a>
     ))}
-  </ul>
+  </div>
 </StarlightPage>
+
+<style>
+  .cl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 2rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .cl-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    text-decoration: none;
+    color: var(--sl-color-text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cl-entry:last-child { border-bottom: none; }
+  .cl-entry:hover {
+    background: var(--sl-color-accent-low);
+    border-left-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
+  }
+  .cl-entry--latest {
+    border-left-color: var(--sl-color-accent);
+  }
+  .cl-version { flex: 1; }
+  .cl-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-accent);
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+</style>

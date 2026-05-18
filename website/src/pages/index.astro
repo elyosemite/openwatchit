@@ -5,25 +5,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const features = [
   {
-    icon: '⚡',
+    num: '01',
     title: 'One command, every backend',
     description:
       'Fan-out to Loki, DataDog, Prometheus, CloudWatch, and more in parallel. One ordered result, every time.',
   },
   {
-    icon: '🔌',
+    num: '02',
     title: 'Plugin architecture',
     description:
       'Every vendor is a standalone gRPC plugin. Write yours in Go, Rust, Python — anything with gRPC support.',
   },
   {
-    icon: '🛡️',
+    num: '03',
     title: 'No silent failures',
     description:
       'If a backend is unreachable you get an explicit warning alongside partial results — never silent data loss.',
   },
   {
-    icon: '🔒',
+    num: '04',
     title: 'Secure by default',
     description:
       'Credentials are always environment variable references. Plaintext secrets in config are rejected at startup.',
@@ -31,14 +31,14 @@ const features = [
 ];
 
 const vendors = [
-  { name: 'Grafana Loki',        signal: 'Logs',                  version: 'v0.1' },
-  { name: 'Prometheus',          signal: 'Metrics',               version: 'v0.1' },
-  { name: 'Grafana Tempo',       signal: 'Traces',                version: 'v0.1' },
-  { name: 'Jaeger',              signal: 'Traces',                version: 'v0.2' },
-  { name: 'DataDog',             signal: 'Logs, Metrics, Traces', version: 'v0.2' },
-  { name: 'AWS CloudWatch',      signal: 'Logs, Metrics',         version: 'v0.2' },
-  { name: 'Azure AppInsights',   signal: 'Logs, Metrics, Traces', version: 'v0.3' },
-  { name: 'Elasticsearch',       signal: 'Logs',                  version: 'Community' },
+  { name: 'Grafana Loki',        signal: 'Logs',                  version: 'v0.5' },
+  { name: 'Prometheus',          signal: 'Metrics',               version: 'v0.5' },
+  { name: 'Grafana Tempo',       signal: 'Traces',                version: 'TBD' },
+  { name: 'Jaeger',              signal: 'Traces',                version: 'TBD' },
+  { name: 'DataDog',             signal: 'Logs, Metrics, Traces', version: 'TBD' },
+  { name: 'AWS CloudWatch',      signal: 'Logs, Metrics',         version: 'TBD' },
+  { name: 'Azure AppInsights',   signal: 'Logs, Metrics, Traces', version: 'TBD' },
+  { name: 'Elasticsearch',       signal: 'Logs',                  version: 'TBD' },
 ];
 ---
 
@@ -59,6 +59,7 @@ const vendors = [
 <nav>
   <div class="container nav-inner">
     <a href="/" class="logo">
+      <span class="logo-mark" aria-hidden="true">ow</span>
       OpenWatchIt
     </a>
     <div class="nav-links">
@@ -72,7 +73,6 @@ const vendors = [
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">Open Source · MIT License</div>
     <h1>
       One query language for<br />
       <em>all your observability</em> backends
@@ -87,48 +87,186 @@ const vendors = [
 
     <!-- Terminal mockup -->
     <div class="terminal-wrap">
+
+      <div class="signal-select" role="tablist" aria-label="Signal type">
+        <button class="signal-card active" data-pane="t-logs" role="tab" aria-selected="true" aria-controls="t-logs" aria-label="Show Logs demo">
+          <span class="signal-card-dot signal-dot-logs" aria-hidden="true"></span>
+          <span class="signal-card-label">Logs</span>
+          <span class="signal-card-desc">loki · datadog · appinsights · cloudwatch</span>
+        </button>
+        <button class="signal-card" data-pane="t-metrics" role="tab" aria-selected="false" aria-controls="t-metrics" aria-label="Show Metrics demo">
+          <span class="signal-card-dot signal-dot-metrics" aria-hidden="true"></span>
+          <span class="signal-card-label">Metrics</span>
+          <span class="signal-card-desc">prometheus · datadog · cloudwatch · azmonitor</span>
+        </button>
+        <button class="signal-card" data-pane="t-traces" role="tab" aria-selected="false" aria-controls="t-traces" aria-label="Show Traces demo">
+          <span class="signal-card-dot signal-dot-traces" aria-hidden="true"></span>
+          <span class="signal-card-label">Traces</span>
+          <span class="signal-card-desc">tempo · jaeger · datadog · zipkin</span>
+        </button>
+      </div>
+
       <div class="terminal">
-        <div class="terminal-bar">
+        <div class="terminal-bar" aria-hidden="true">
           <span class="dot dot-r"></span>
           <span class="dot dot-y"></span>
           <span class="dot dot-g"></span>
-          <span class="terminal-title">terminal</span>
+          <span class="terminal-title">owit</span>
         </div>
         <div class="terminal-body">
 
-          <span class="t-comment"># 1. find errors across all backends</span>
-          <span class="t-gap"></span>
-          <div>
-            <span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit logs</span><span class="t-filter"> level=error service=checkout</span><span class="t-flag"> --last</span> <span class="t-val">30m</span><span class="t-flag"> --limit</span> <span class="t-val">4</span>
+          <!-- ── LOGS ── -->
+          <div class="t-pane active" id="t-logs">
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit logs</span><span class="t-filter"> level=error service=api</span><span class="t-flag"> --last</span> <span class="t-val">1h</span><span class="t-flag"> --limit</span> <span class="t-val">25</span></div>
+            <span class="t-sep"></span>
+            <div class="t-row-log t-header"><span>SOURCE</span><span>TIME</span><span>LEVEL</span><span>SERVICE</span><span>TRACE-ID</span><span>MESSAGE</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:32:01</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">a3f9e12b</span><span class="t-msg">upstream timeout: payment-svc (3042ms)</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:32:01</span><span class="t-level">error</span><span class="t-svc">payment</span><span class="t-tid">a3f9e12b</span><span class="t-msg">stripe: connection reset by peer</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:32:03</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">a3f9e12b</span><span class="t-msg">retry payment-svc: attempt 2/3</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:32:05</span><span class="t-level">error</span><span class="t-svc">payment</span><span class="t-tid">a3f9e12b</span><span class="t-msg">stripe webhook delivery failed: 503</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:33:11</span><span class="t-level">error</span><span class="t-svc">auth</span><span class="t-tid">b7c1d24e</span><span class="t-msg">jwt: signing key not found in JWKS</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:33:13</span><span class="t-level">error</span><span class="t-svc">auth</span><span class="t-tid">b7c1d24e</span><span class="t-msg">oidc provider returned 502 Bad Gateway</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:33:14</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">b7c1d24e</span><span class="t-msg">401 upstream: auth-svc unavailable</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:33:15</span><span class="t-level">error</span><span class="t-svc">auth</span><span class="t-tid">b7c1d24e</span><span class="t-msg">dependency health check failed</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:38:44</span><span class="t-level">error</span><span class="t-svc">inventory</span><span class="t-tid">c0a5f33d</span><span class="t-msg">deadlock detected on orders table</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:38:45</span><span class="t-level">error</span><span class="t-svc">inventory</span><span class="t-tid">c0a5f33d</span><span class="t-msg">postgres: deadlock, transaction aborted</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:38:46</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">c0a5f33d</span><span class="t-msg">500 inventory-svc: internal server error</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:38:47</span><span class="t-level">error</span><span class="t-svc">inventory</span><span class="t-tid">c0a5f33d</span><span class="t-msg">tx rolled back after 3 retries</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:42:09</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">d1b8e71f</span><span class="t-msg">inventory hold expired: order aborted</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:42:10</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">d1b8e71f</span><span class="t-msg">saga: compensating transaction started</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:42:11</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">d1b8e71f</span><span class="t-msg">saga rollback: payment already captured</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:42:13</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">d1b8e71f</span><span class="t-msg">order.failed enqueued to DLQ</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:51:22</span><span class="t-level">error</span><span class="t-svc">notifier</span><span class="t-tid">e2c9a80a</span><span class="t-msg">SMTP rejected: 550 address rejected</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:51:23</span><span class="t-level">error</span><span class="t-svc">notifier</span><span class="t-tid">e2c9a80a</span><span class="t-msg">sendgrid: daily rate limit exceeded</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:51:24</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">e2c9a80a</span><span class="t-msg">notification skipped: quota hit</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:51:25</span><span class="t-level">error</span><span class="t-svc">notifier</span><span class="t-tid">e2c9a80a</span><span class="t-msg">SES throttling: message dropped</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:57:38</span><span class="t-level">error</span><span class="t-svc">search</span><span class="t-tid">f3d0b91c</span><span class="t-msg">elasticsearch cluster status: red</span></div>
+            <div class="t-row-log"><span class="t-src-2">datadog</span><span class="t-time">14:57:39</span><span class="t-level">error</span><span class="t-svc">search</span><span class="t-tid">f3d0b91c</span><span class="t-msg">query timeout after 5000ms</span></div>
+            <div class="t-row-log"><span class="t-src-3">appinsights</span><span class="t-time">14:57:41</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">f3d0b91c</span><span class="t-msg">503 search-svc: upstream unavailable</span></div>
+            <div class="t-row-log"><span class="t-src-4">cloudwatch</span><span class="t-time">14:57:42</span><span class="t-level">error</span><span class="t-svc">search</span><span class="t-tid">f3d0b91c</span><span class="t-msg">circuit breaker open: search-svc</span></div>
+            <div class="t-row-log"><span class="t-src-1">loki</span><span class="t-time">14:58:55</span><span class="t-level">error</span><span class="t-svc">api-gw</span><span class="t-tid">g4e1c02d</span><span class="t-msg">rate limit: 429 sent to 10.0.2.15 (burst)</span></div>
+            <span class="t-gap"></span>
+            <div class="t-warn">⚠  4 backends queried · 25 events · 0 backend errors</div>
+            <span class="t-gap"></span>
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cursor"></span></div>
           </div>
-          <span class="t-sep"></span>
-          <div class="t-header"><span style="display:inline-block;width:100px">SOURCE</span><span style="display:inline-block;width:155px">TIMESTAMP</span><span style="display:inline-block;width:52px">LEVEL</span><span style="display:inline-block;width:105px">SERVICE</span><span style="display:inline-block;width:110px">TRACE ID</span><span>MESSAGE</span></div>
-          <div class="t-row"><span class="t-source">loki</span><span class="t-time">03:21:04</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">failed to charge: stripe timeout</span></div>
-          <div class="t-row"><span class="t-source">loki</span><span class="t-time">03:21:07</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">retrying payment processor</span></div>
-          <div class="t-row"><span class="t-source">datadog</span><span class="t-time">03:21:09</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">a1b2c3d4</span><span class="t-msg">payment-svc unreachable</span></div>
-          <div class="t-row"><span class="t-source">datadog</span><span class="t-time">03:21:12</span><span class="t-level">error</span><span class="t-svc">checkout</span><span class="t-tid">e5f6g7h8</span><span class="t-msg">order rollback triggered</span></div>
-          <div class="t-warn">⚠ cloudwatch: connection refused</div>
 
-          <span class="t-sep" style="margin-top:0.9rem"></span>
-
-          <span class="t-comment"># 2. correlate with traces using the trace id</span>
-          <span class="t-gap"></span>
-          <div>
-            <span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit traces</span><span class="t-filter"> trace_id=a1b2c3d4</span><span class="t-flag"> --last</span> <span class="t-val">30m</span>
+          <!-- ── METRICS ── -->
+          <div class="t-pane" id="t-metrics">
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit metrics</span><span class="t-filter"> service=api</span><span class="t-flag"> --last</span> <span class="t-val">30m</span><span class="t-flag"> --step</span> <span class="t-val">2m</span></div>
+            <span class="t-sep"></span>
+            <div class="t-row-metric t-header"><span>SOURCE</span><span>TIME</span><span>METRIC</span><span>VALUE</span><span>LABELS</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:30:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval">142ms</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:30:00</span><span class="t-mname">http_request_duration_p50</span><span class="t-mval">18ms</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:30:00</span><span class="t-mname">http_error_rate</span><span class="t-mval">0.04%</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-2">datadog</span><span class="t-time">14:30:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval">138ms</span><span class="t-labels">service:api env:prod</span></div>
+            <div class="t-row-metric"><span class="t-src-2">datadog</span><span class="t-time">14:30:00</span><span class="t-mname">http_error_rate</span><span class="t-mval">0.03%</span><span class="t-labels">service:api env:prod</span></div>
+            <div class="t-row-metric"><span class="t-src-4">cloudwatch</span><span class="t-time">14:30:00</span><span class="t-mname">ALBTargetResponseTime</span><span class="t-mval">144ms</span><span class="t-labels">TargetGroup=api-prod</span></div>
+            <div class="t-row-metric"><span class="t-src-4">cloudwatch</span><span class="t-time">14:30:00</span><span class="t-mname">HTTPCode_Target_5XX_Count</span><span class="t-mval">3</span><span class="t-labels">TargetGroup=api-prod</span></div>
+            <div class="t-row-metric"><span class="t-src-3">azmonitor</span><span class="t-time">14:30:00</span><span class="t-mname">requests/duration</span><span class="t-mval">141ms</span><span class="t-labels">roleName=api</span></div>
+            <div class="t-row-metric"><span class="t-src-3">azmonitor</span><span class="t-time">14:30:00</span><span class="t-mname">requests/failed</span><span class="t-mval">2</span><span class="t-labels">roleName=api</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:32:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval t-mval-err">289ms ↑</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-2">datadog</span><span class="t-time">14:32:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval t-mval-err">301ms ↑</span><span class="t-labels">service:api env:prod</span></div>
+            <div class="t-row-metric"><span class="t-src-4">cloudwatch</span><span class="t-time">14:32:00</span><span class="t-mname">ALBTargetResponseTime</span><span class="t-mval t-mval-err">310ms ↑</span><span class="t-labels">TargetGroup=api-prod</span></div>
+            <div class="t-row-metric"><span class="t-src-3">azmonitor</span><span class="t-time">14:32:00</span><span class="t-mname">requests/duration</span><span class="t-mval t-mval-err">294ms ↑</span><span class="t-labels">roleName=api</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:34:00</span><span class="t-mname">http_error_rate</span><span class="t-mval t-mval-err">1.2% ↑</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-2">datadog</span><span class="t-time">14:34:00</span><span class="t-mname">http_error_rate</span><span class="t-mval t-mval-err">1.4% ↑</span><span class="t-labels">service:api env:prod</span></div>
+            <div class="t-row-metric"><span class="t-src-4">cloudwatch</span><span class="t-time">14:34:00</span><span class="t-mname">HTTPCode_Target_5XX_Count</span><span class="t-mval t-mval-err">18 ↑</span><span class="t-labels">TargetGroup=api-prod</span></div>
+            <div class="t-row-metric"><span class="t-src-3">azmonitor</span><span class="t-time">14:36:00</span><span class="t-mname">requests/failed</span><span class="t-mval t-mval-err">22 ↑</span><span class="t-labels">roleName=api</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:38:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval t-mval-err">3042ms ↑</span><span class="t-labels">service=api env=prod</span></div>
+            <div class="t-row-metric"><span class="t-src-2">datadog</span><span class="t-time">14:38:00</span><span class="t-mname">http_request_duration_p99</span><span class="t-mval t-mval-err">3108ms ↑</span><span class="t-labels">service:api env:prod</span></div>
+            <div class="t-row-metric"><span class="t-src-4">cloudwatch</span><span class="t-time">14:38:00</span><span class="t-mname">ALBTargetResponseTime</span><span class="t-mval t-mval-err">3089ms ↑</span><span class="t-labels">TargetGroup=api-prod</span></div>
+            <div class="t-row-metric"><span class="t-src-3">azmonitor</span><span class="t-time">14:38:00</span><span class="t-mname">requests/duration</span><span class="t-mval t-mval-err">3021ms ↑</span><span class="t-labels">roleName=api</span></div>
+            <div class="t-row-metric"><span class="t-src-1">prometheus</span><span class="t-time">14:40:00</span><span class="t-mname">http_error_rate</span><span class="t-mval t-mval-err">8.9% ↑</span><span class="t-labels">service=api env=prod</span></div>
+            <span class="t-gap"></span>
+            <div class="t-warn">⚠  4 backends queried · 22 data points · 0 backend errors</div>
+            <span class="t-gap"></span>
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cursor"></span></div>
           </div>
-          <span class="t-sep"></span>
-          <div class="t-header"><span style="display:inline-block;width:100px">SOURCE</span><span style="display:inline-block;width:155px">TIMESTAMP</span><span style="display:inline-block;width:85px">DURATION</span><span style="display:inline-block;width:70px">STATUS</span><span>SERVICE</span></div>
-          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">842ms</span><span class="t-status">error</span><span class="t-svc">checkout → payment-svc → stripe-proxy</span></div>
-          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">831ms</span><span class="t-status">error</span><span class="t-svc">payment-svc → stripe-proxy</span></div>
-          <div class="t-row2"><span class="t-source">tempo</span><span class="t-time">03:21:04</span><span class="t-dur">timeout</span><span class="t-status">error</span><span class="t-svc">stripe-proxy</span></div>
-          <span class="t-gap"></span>
-          <div><span class="t-prompt">›</span>&nbsp;<span class="t-cursor"></span></div>
+
+          <!-- ── TRACES ── -->
+          <div class="t-pane" id="t-traces">
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cmd">owit traces</span><span class="t-filter"> service=checkout status=error</span><span class="t-flag"> --last</span> <span class="t-val">1h</span><span class="t-flag"> --limit</span> <span class="t-val">20</span></div>
+            <span class="t-sep"></span>
+            <div class="t-row-trace t-header"><span>SOURCE</span><span>TIME</span><span>TRACE-ID</span><span>DURATION</span><span>STATUS</span><span>SPANS</span><span>SERVICE PATH</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">3042ms</span><span class="t-status">error</span><span class="t-spans">12</span><span class="t-msg">checkout → payment-svc → stripe-proxy</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">841ms</span><span class="t-status">error</span><span class="t-spans">5</span><span class="t-msg">payment-svc → stripe-proxy</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">3041ms</span><span class="t-status">error</span><span class="t-spans">3</span><span class="t-msg">stripe-proxy [connect timeout]</span></div>
+            <div class="t-row-trace"><span class="t-src-5">jaeger</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">3044ms</span><span class="t-status">error</span><span class="t-spans">11</span><span class="t-msg">checkout.processPayment</span></div>
+            <div class="t-row-trace"><span class="t-src-5">jaeger</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">843ms</span><span class="t-status">error</span><span class="t-spans">4</span><span class="t-msg">payment-svc.chargeCard</span></div>
+            <div class="t-row-trace"><span class="t-src-2">datadog</span><span class="t-time">14:32:01</span><span class="t-tid">a3f9e12b</span><span class="t-dur">3048ms</span><span class="t-status">error</span><span class="t-spans">—</span><span class="t-msg">checkout [apm]</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:33:14</span><span class="t-tid">b7c1d24e</span><span class="t-dur">201ms</span><span class="t-status">error</span><span class="t-spans">6</span><span class="t-msg">api-gw → auth-svc → oidc-provider</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:33:14</span><span class="t-tid">b7c1d24e</span><span class="t-dur">199ms</span><span class="t-status">error</span><span class="t-spans">3</span><span class="t-msg">auth-svc → oidc-provider [502]</span></div>
+            <div class="t-row-trace"><span class="t-src-5">jaeger</span><span class="t-time">14:33:14</span><span class="t-tid">b7c1d24e</span><span class="t-dur">203ms</span><span class="t-status">error</span><span class="t-spans">5</span><span class="t-msg">api-gw.authenticate</span></div>
+            <div class="t-row-trace"><span class="t-src-2">datadog</span><span class="t-time">14:33:14</span><span class="t-tid">b7c1d24e</span><span class="t-dur">198ms</span><span class="t-status">error</span><span class="t-spans">—</span><span class="t-msg">auth-svc [apm]</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:38:44</span><span class="t-tid">c0a5f33d</span><span class="t-dur">1204ms</span><span class="t-status">error</span><span class="t-spans">8</span><span class="t-msg">inventory-svc → postgres [deadlock]</span></div>
+            <div class="t-row-trace"><span class="t-src-5">jaeger</span><span class="t-time">14:38:44</span><span class="t-tid">c0a5f33d</span><span class="t-dur">1201ms</span><span class="t-status">error</span><span class="t-spans">7</span><span class="t-msg">inventory-svc.createHold</span></div>
+            <div class="t-row-trace"><span class="t-src-2">datadog</span><span class="t-time">14:38:45</span><span class="t-tid">c0a5f33d</span><span class="t-dur">1208ms</span><span class="t-status">error</span><span class="t-spans">—</span><span class="t-msg">inventory-svc [apm]</span></div>
+            <div class="t-row-trace"><span class="t-src-4">zipkin</span><span class="t-time">14:38:44</span><span class="t-tid">c0a5f33d</span><span class="t-dur">1210ms</span><span class="t-status">error</span><span class="t-spans">9</span><span class="t-msg">inventory-svc [deadlock detected]</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:42:09</span><span class="t-tid">d1b8e71f</span><span class="t-dur">2103ms</span><span class="t-status">error</span><span class="t-spans">15</span><span class="t-msg">checkout → inventory → payment-svc</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:42:09</span><span class="t-tid">d1b8e71f</span><span class="t-dur">412ms</span><span class="t-status">error</span><span class="t-spans">4</span><span class="t-msg">inventory-svc [hold expired]</span></div>
+            <div class="t-row-trace"><span class="t-src-5">jaeger</span><span class="t-time">14:42:09</span><span class="t-tid">d1b8e71f</span><span class="t-dur">2109ms</span><span class="t-status">error</span><span class="t-spans">14</span><span class="t-msg">checkout.placeOrder [saga rollback]</span></div>
+            <div class="t-row-trace"><span class="t-src-2">datadog</span><span class="t-time">14:42:10</span><span class="t-tid">d1b8e71f</span><span class="t-dur">2115ms</span><span class="t-status">error</span><span class="t-spans">—</span><span class="t-msg">checkout [apm]</span></div>
+            <div class="t-row-trace"><span class="t-src-4">zipkin</span><span class="t-time">14:42:09</span><span class="t-tid">d1b8e71f</span><span class="t-dur">2098ms</span><span class="t-status">error</span><span class="t-spans">13</span><span class="t-msg">checkout → saga rollback → payment-svc</span></div>
+            <div class="t-row-trace"><span class="t-src-1">tempo</span><span class="t-time">14:57:38</span><span class="t-tid">f3d0b91c</span><span class="t-dur">500ms</span><span class="t-status">error</span><span class="t-spans">6</span><span class="t-msg">api-gw → search-svc [circuit open]</span></div>
+            <span class="t-gap"></span>
+            <div class="t-warn">⚠  4 backends queried · 20 spans · zipkin: b7c1d24e not found (auth-svc not instrumented)</div>
+            <span class="t-gap"></span>
+            <div><span class="t-prompt">›</span>&nbsp;<span class="t-cursor"></span></div>
+          </div>
 
         </div>
       </div>
     </div>
+
+    <script>
+      document.querySelectorAll('.signal-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          document.querySelectorAll('.signal-card').forEach(function(c) {
+            c.classList.remove('active');
+            c.setAttribute('aria-selected', 'false');
+          });
+          document.querySelectorAll('.t-pane').forEach(function(p) { p.classList.remove('active'); });
+          card.classList.add('active');
+          card.setAttribute('aria-selected', 'true');
+          var pane = document.getElementById(card.getAttribute('data-pane'));
+          if (pane) pane.classList.add('active');
+        });
+        card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+        });
+      });
+    </script>
   </div>
 </section>
+
+<!-- Project status -->
+<div class="status-bar">
+  <div class="container">
+    <div class="status-items">
+      <div class="status-item">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-label">Stage</span>
+        <span class="status-value">RFC & feedback</span>
+      </div>
+      <div class="status-sep" aria-hidden="true"></div>
+      <div class="status-item">
+        <span class="status-label">Latest release</span>
+        <span class="status-value">v0.4.5</span>
+      </div>
+      <div class="status-sep" aria-hidden="true"></div>
+      <div class="status-item">
+        <span class="status-label">License</span>
+        <span class="status-value">MIT</span>
+      </div>
+      <div class="status-sep" aria-hidden="true"></div>
+      <div class="status-item">
+        <span class="status-label">Backends</span>
+        <span class="status-value">8 planned</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Features -->
 <section class="section">
@@ -139,11 +277,46 @@ const vendors = [
     <div class="features-grid">
       {features.map(f => (
         <div class="feature-card">
-          <span class="feature-icon">{f.icon}</span>
+          <span class="feature-num" aria-hidden="true">{f.num}</span>
           <div class="feature-title">{f.title}</div>
           <div class="feature-desc">{f.description}</div>
         </div>
       ))}
+    </div>
+  </div>
+</section>
+
+<!-- Use cases -->
+<section class="section">
+  <div class="container">
+    <p class="section-label">Use cases</p>
+    <h2 class="section-title">Built for the moments that matter</h2>
+    <p class="section-sub">owit is not a dashboard replacement. It's what you reach for when something is broken and you need answers fast.</p>
+    <div class="usecases-grid">
+      <div class="usecase-card">
+        <div class="usecase-scenario">Production incident</div>
+        <div class="usecase-title">Everything in one place during an outage</div>
+        <div class="usecase-desc">
+          Your payment service is throwing 500s at 3am. Logs are in Loki, traces in Tempo, metrics in Datadog.
+          Instead of switching between three browser tabs, one <span class="inline-code">owit</span> command returns everything correlated by trace ID — in your terminal, in seconds.
+        </div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-scenario">Multi-vendor teams</div>
+        <div class="usecase-title">One query language across every squad</div>
+        <div class="usecase-desc">
+          Platform chose Prometheus. Product chose Datadog. SRE chose CloudWatch.
+          owit gives every engineer the same query syntax regardless of which vendor is behind it — no re-learning, no tribal knowledge.
+        </div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-scenario">Terminal-first workflows</div>
+        <div class="usecase-title">Pipe observability data like any other tool</div>
+        <div class="usecase-desc">
+          Dashboards are great for monitoring. Terminals are better for debugging.
+          owit lives where you already work — pipe results to <span class="inline-code">grep</span>, <span class="inline-code">jq</span>, or your own scripts without ever opening a browser.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -153,41 +326,37 @@ const vendors = [
   <div class="container">
     <p class="section-label">How it works</p>
     <h2 class="section-title">From one command to every backend</h2>
-    <p class="section-sub">A thin engine translates a single OWL query into vendor-native requests, fans out in parallel, and merges the results.</p>
+    <p class="section-sub">Three commands and you're querying every backend at once. No config files to edit, no plugins to hunt down manually.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">Configure your backends</div>
-          <div class="step-desc">
-            Drop a TOML file at <span class="inline-code">~/.owit/config.toml</span> with vendor URLs and credentials as environment variable references.
-            Mark each backend <span class="inline-code">default = true</span> to include it in fan-out by default.
-          </div>
+          <div class="step-title">Install owit</div>
+          <div class="step-desc">One command gets you the CLI. That's it.</div>
+          <span class="step-code">owit install</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">Install plugins for your vendors</div>
-          <div class="step-desc">
-            Each vendor integration is a standalone plugin binary installed at <span class="inline-code">~/.owit/plugins/</span>.
-            Plugins start lazily and stay alive across commands to avoid cold-start overhead.
-          </div>
+          <div class="step-title">Connect your backends</div>
+          <div class="step-desc">Tell owit where your backends are. It downloads the right plugin, stores the connection, and you never touch a config file.</div>
+          <span class="step-code">owit backend add loki --url https://loki.internal --token $LOKI_TOKEN</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Write one OWL query</div>
-          <div class="step-desc">Positional filter triplets, named flags, signal type as the subcommand. No new syntax to learn — it reads like a shell command.</div>
-          <span class="step-code">owit traces duration gt 500ms --last 1h --limit 20</span>
+          <div class="step-title">Query everything at once</div>
+          <div class="step-desc">One command fans out to every connected backend in parallel. Filters read like plain English — no new syntax to memorise.</div>
+          <span class="step-code">owit logs level=error service=api --last 1h --limit 25</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Get a unified, normalised result</div>
-          <div class="step-desc">Results from all backends are merged and sorted by timestamp. Backend failures surface as explicit per-backend warnings — never silent data loss.</div>
+          <div class="step-title">One result, every source</div>
+          <div class="step-desc">Results from all backends arrive merged and sorted by timestamp. If a backend is down, you get an explicit warning alongside partial results — never silent data loss.</div>
         </div>
       </div>
     </div>
@@ -215,15 +384,97 @@ const vendors = [
               <td style="font-weight:600;color:var(--text)">{v.name}</td>
               <td>{v.signal}</td>
               <td>
-                {v.version === 'v0.1'      && <span class="badge badge-v01">v0.1</span>}
-                {v.version === 'v0.2'      && <span class="badge badge-v02">v0.2</span>}
-                {v.version === 'v0.3'      && <span class="badge badge-v03">v0.3</span>}
-                {v.version === 'Community' && <span class="badge badge-comm">Community</span>}
+                {v.version === 'v0.5' && <span class="badge badge-v01">v0.5 — first release</span>}
+                {v.version === 'TBD'  && <span class="badge badge-tbd">TBD</span>}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+    </div>
+  </div>
+</section>
+
+<!-- Roadmap -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="section-label">Roadmap</p>
+    <h2 class="section-title">What we're building next</h2>
+    <p class="section-sub">We're focused on getting the first real implementation right before expanding scope.</p>
+    <div class="roadmap">
+      <div class="roadmap-item roadmap-released">
+        <div class="roadmap-header">
+          <span class="roadmap-version">v0.4.5</span>
+          <span class="roadmap-badge roadmap-badge--released">Current</span>
+        </div>
+        <ul class="roadmap-features">
+          <li>Architecture RFC and plugin API specification</li>
+          <li>OWL query language design and syntax proposal</li>
+          <li>Vendor plugin contract defined via gRPC</li>
+          <li>Documentation to spark community discussion</li>
+        </ul>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-header">
+          <span class="roadmap-version">v0.5</span>
+          <span class="roadmap-badge roadmap-badge--planned">Next</span>
+        </div>
+        <ul class="roadmap-features">
+          <li>Grafana Loki — <span class="inline-code">owit logs</span></li>
+          <li>Prometheus — <span class="inline-code">owit metrics</span></li>
+          <li>First working end-to-end query</li>
+          <li>Plugin binary install via <span class="inline-code">owit backend add</span></li>
+        </ul>
+      </div>
+      <div class="roadmap-item roadmap-tbd">
+        <div class="roadmap-header">
+          <span class="roadmap-version">Beyond</span>
+          <span class="roadmap-badge roadmap-badge--tbd">TBD</span>
+        </div>
+        <ul class="roadmap-features">
+          <li>More backends based on community demand</li>
+          <li>Traces, profiles, and additional signal types</li>
+          <li>Shape this with us — open a discussion on GitHub</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contributing -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="section-label">Contributing</p>
+    <h2 class="section-title">Help shape what comes next</h2>
+    <p class="section-sub">OpenWatchIt is in early development and your input matters. Feedback, ideas, and code directly influence the roadmap.</p>
+    <div class="contrib-grid">
+      <div class="contrib-card">
+        <div class="contrib-num" aria-hidden="true">→</div>
+        <div class="contrib-title">Share feedback</div>
+        <div class="contrib-desc">
+          We're collecting feedback on the query language design, output format, and plugin architecture.
+          Open a GitHub Discussion with your thoughts.
+        </div>
+        <a href="https://github.com/elyosemite/openwatchit/discussions" class="contrib-link" target="_blank" rel="noopener">Start a discussion →</a>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-num" aria-hidden="true">→</div>
+        <div class="contrib-title">Report issues</div>
+        <div class="contrib-desc">
+          Found unexpected behavior or a rough edge? Open an issue on GitHub.
+          Look for <span class="inline-code">good first issue</span> labels if you want to contribute a fix.
+        </div>
+        <a href="https://github.com/elyosemite/openwatchit/issues" class="contrib-link" target="_blank" rel="noopener">Open an issue →</a>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-num" aria-hidden="true">→</div>
+        <div class="contrib-title">Write a plugin</div>
+        <div class="contrib-desc">
+          Every backend is a standalone gRPC plugin — Go, Rust, Python, anything with gRPC support.
+          Read the guide and contribute support for a new vendor.
+        </div>
+        <a href={`${base}/plugins/writing-a-plugin/`} class="contrib-link">Plugin development guide →</a>
+      </div>
     </div>
   </div>
 </section>

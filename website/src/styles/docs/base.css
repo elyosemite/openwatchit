@@ -1,12 +1,27 @@
 :root {
   --font-serif: 'Lora', Georgia, serif;
-  --font-sans:  'Segoe UI', system-ui, sans-serif;
+  --font-sans:  'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
   --sl-font:    var(--font-sans);
+  --sl-font-mono: var(--font-mono);
+
+  /* Brand orange propagated into Starlight accent system */
+  --sl-color-accent-low:  #fff7ed;
+  --sl-color-accent:      #c2410c;
+  --sl-color-accent-high: #9a3412;
+  --sl-color-text-accent: #c2410c;
+}
+
+
+.site-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
 }
 
 .sl-markdown-content {
   font-size: 1rem;
-  line-height: 1.65rem;
+  line-height: 1.72;
 }
 
 .sl-markdown-content p,
@@ -14,4 +29,11 @@
 .sl-markdown-content td,
 .sl-markdown-content th {
   font-family: var(--font-sans);
+}
+
+/* Tighten code blocks to match brand mono */
+.sl-markdown-content code,
+.sl-markdown-content pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
 }
