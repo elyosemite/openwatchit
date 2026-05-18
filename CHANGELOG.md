@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/elyosemite/openwatchit/compare/v0.4.1...v0.4.2) (2026-05-18)
+
+
+### Bug Fixes
+
+* update git-cliff installation command to use dynamic file search ([49685b1](https://github.com/elyosemite/openwatchit/commit/49685b1459dc387de9a8999bbd28f1f29f81a785))
+
 ## [0.4.1](https://github.com/elyosemite/openwatchit/compare/v0.4.0...v0.4.1) (2026-05-18)
 
 
