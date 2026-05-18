@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/elyosemite/openwatchit/compare/v0.4.5...v0.5.0) (2026-05-18)
+
+
+### Features
+
+* add dynamic changelog pages and update links to use base URL ([ff21655](https://github.com/elyosemite/openwatchit/commit/ff2165570b0d024d2b12f87b81862945be737f21))
+
 ## [0.4.5](https://github.com/elyosemite/openwatchit/compare/v0.4.4...v0.4.5) (2026-05-18)
 
 
