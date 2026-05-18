@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/elyosemite/openwatchit/compare/v0.4.3...v0.4.4) (2026-05-18)
+
+
+### Bug Fixes
+
+* add permissions for actions in changelog job ([be18f44](https://github.com/elyosemite/openwatchit/commit/be18f442b22b1b81982aaac77a5ef569831516ad))
+
 ## [0.4.3](https://github.com/elyosemite/openwatchit/compare/v0.4.2...v0.4.3) (2026-05-18)
 
 
