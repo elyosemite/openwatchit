@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/elyosemite/openwatchit/compare/v0.5.0...v0.6.0) (2026-05-20)
+
+
+### Features
+
+* define OWL proto contract ([5749b6f](https://github.com/elyosemite/openwatchit/commit/5749b6f6ef72370f6c23fd8483aec8c41618f4b7))
+* generate Go gRPC bindings from proto ([4aa66c8](https://github.com/elyosemite/openwatchit/commit/4aa66c8160dcd6f69ec45b8926c05394044e7648))
+* **loki:** add AST-to-LogQL translator ([d04e06b](https://github.com/elyosemite/openwatchit/commit/d04e06b853c377913c2bb4d65cdf0f0d404cd019))
+* **loki:** add gRPC plugin server ([71c6ae4](https://github.com/elyosemite/openwatchit/commit/71c6ae451bbac7d611ea6a7df8f8a5a4b1af1bd2))
+* **loki:** add Loki HTTP client with env-var auth ([af815e9](https://github.com/elyosemite/openwatchit/commit/af815e93ce088c924d98852ff0ccfafe5d09efae))
+* **loki:** add Loki result normalizer ([cbb6295](https://github.com/elyosemite/openwatchit/commit/cbb62957ad8a89de9861f53f4063beefeabb6a05))
+* **loki:** add plugin binary entrypoint ([ac00c07](https://github.com/elyosemite/openwatchit/commit/ac00c07eeaff97b29701f90dab529b2679bad409))
+
 ## [0.5.0](https://github.com/elyosemite/openwatchit/compare/v0.4.5...v0.5.0) (2026-05-18)
 
 
