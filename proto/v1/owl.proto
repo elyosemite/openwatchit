@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package openwatchit.v1;
+
+option go_package = "github.com/elyosemite/openwatchit/api/v1;apiv1";
+
+// ─────────────────────────────────────────────
+// Signal Types
+// ─────────────────────────────────────────────
+
+// SignalType is one of the four observability telemetry categories.
+// Only LOG is fully implemented in v0.1. The remaining values reserve
+// enum space so future plugins never cause a proto schema break.
+enum SignalType {
+  SIGNAL_TYPE_UNSPECIFIED = 0;
+  SIGNAL_TYPE_LOG         = 1;
+  SIGNAL_TYPE_METRIC      = 2;
+  SIGNAL_TYPE_TRACE       = 3;
+  SIGNAL_TYPE_PROFILE     = 4;
+}
+
+// ─────────────────────────────────────────────
+// OWL AST
+// ─────────────────────────────────────────────
+
+// FilterOp defines the comparison operators supported in v0.1.
+// Plugins that receive an unsupported op must emulate it in-memory (ADR-0002).
+enum FilterOp {
+  FILTER_OP_UNSPECIFIED = 0;
+  FILTER_OP_EQ          = 1; // field eq value  →  field = value
+  FILTER_OP_NE          = 2; // field ne value  →  field != value
+}
+
+// Filter is a single OWL filter triplet: field op value.
+// Example: level eq error  →  Filter{field:"level", op:EQ, value:"error"}
+message Filter {
+  string   field = 1;
+  FilterOp op    = 2;
+  string   value = 3;
+}
+
+// TimeRange expresses a relative lookback window.
+// The `last` field uses Go duration strings: "30m", "2h", "7d".
+message TimeRange {
+  string last = 1;
+}
+
+// AST is the parsed, structured representation of an OWL query.
+// Plugins receive this message — they never parse raw OWL text (ADR-0001).
+message AST {
+  SignalType      signal_type = 1;
+  repeated Filter filters     = 2;
+  TimeRange       time_range  = 3;
+  int32           limit       = 4;
+}
+
+// ─────────────────────────────────────────────
+// Backend Config
+// ─────────────────────────────────────────────
+
+// BackendConfig carries vendor-agnostic configuration for a single backend.
+// Credentials are never stored here; they arrive via environment variables (ADR-0009).
+//
+// Conventional keys by plugin:
+//   loki plugin → "url"  e.g. "http://localhost:3100"
+message BackendConfig {
+  string              name   = 1;
+  map<string, string> params = 2;
+}
+
+// ─────────────────────────────────────────────
+// Plugin RPC messages
+// ─────────────────────────────────────────────
+
+// ExecuteRequest is the single call the engine makes to run a query.
+// The plugin translates the AST to its native language, runs the query,
+// normalizes each result row, and streams NormalizedResultRow messages back.
+message ExecuteRequest {
+  AST           ast    = 1;
+  BackendConfig config = 2;
+}
+
+// CapabilitiesRequest is an empty probe sent by the Plugin Manager on startup.
+message CapabilitiesRequest {}
+
+// CapabilitiesResponse declares the signal types a plugin handles and its version.
+message CapabilitiesResponse {
+  repeated SignalType signal_types = 1;
+  string              version      = 2;
+}
+
+// ─────────────────────────────────────────────
+// Normalized Result
+// ─────────────────────────────────────────────
+
+// NormalizedResultRow is the common row schema streamed by all plugins.
+//
+// Canonical fields carry fixed semantics across all vendors — OWL operators
+// and cross-signal joins reference these names.
+//
+// Passthrough carries vendor-specific labels returned with their native names.
+// Available to the user but carry no cross-vendor uniformity guarantee.
+message NormalizedResultRow {
+  // Canonical fields
+  int64  timestamp_ns = 1; // Unix nanoseconds
+  string source       = 2; // vendor identifier, e.g. "loki"
+  string level        = 3; // severity: error, warn, info, debug
+  string service      = 4; // service or app name
+  string message      = 5; // log line or event description
+  string trace_id     = 6; // distributed trace identifier
+  string span_id      = 7; // span within the trace
+
+  // Vendor-specific fields — no cross-vendor uniformity guarantee
+  map<string, string> passthrough = 8;
+}
+
+// ─────────────────────────────────────────────
+// Plugin Service
+// ─────────────────────────────────────────────
+
+// PluginService is the gRPC contract every OpenWatchIt plugin must implement.
+// The engine (Plugin Manager + Dispatcher) is the client; the plugin binary is the server.
+service PluginService {
+  // Capabilities is called once when the Plugin Manager first connects.
+  // The response is cached and used by the Query Planner to validate fan-out scope.
+  rpc Capabilities(CapabilitiesRequest) returns (CapabilitiesResponse);
+
+  // Execute translates the OWL AST to the vendor's native query language,
+  // runs the query against the backend, and streams normalized result rows back.
+  // The stream is closed by the plugin when all rows have been sent.
+  rpc Execute(ExecuteRequest) returns (stream NormalizedResultRow);
+}
